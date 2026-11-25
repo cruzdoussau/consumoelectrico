@@ -13,6 +13,12 @@ Aplicación de cálculo de consumo eléctrico y generación de esquemas unifilar
 
 La importación y generación se realizan localmente en el navegador. No requieren un servidor ni instalación de paquetes.
 
+## Publicación en Vercel
+
+El archivo `vercel.json` publica `sistema-calculo-electrico/` como directorio de salida, con la aplicación disponible en `/`. No se ejecutan comandos de instalación ni compilación.
+
+Al importar el repositorio en Vercel, conservar la raíz del repositorio como **Root Directory**. Los pushes a `main` generan un nuevo despliegue cuando el proyecto está conectado a GitHub.
+
 ## Archivos
 
 - `Calculo de consumo Sala El Tabo.xlsx`: planilla de ejemplo utilizada para las pruebas.
