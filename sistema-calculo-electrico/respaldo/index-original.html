@@ -1,0 +1,1972 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cálculo Eléctrico y Circuitos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F3EF; --surface:#FFFFFF; --surface-2:#E7E9E1; --surface-3:#DBDED3;
+  --ink:#1A2420; --ink-soft:#4B5750; --ink-faint:#7C8781; --line:#D2D6C8;
+  --accent:#BF5B1E; --accent-ink:#FFFFFF; --accent-soft:#F2E2D3;
+  --accent2:#2E4A5E; --accent2-soft:#DCE6EA;
+  --phase2:#6B4C7A; --phase3:#2F6B66;
+  --good:#2F7A52; --good-soft:#E1F0E6;
+  --warn:#A6760B; --warn-soft:#F6ECD1;
+  --bad:#A3312B; --bad-soft:#F6E0DC;
+  --shadow:0 1px 2px rgba(26,36,32,.07), 0 6px 16px rgba(26,36,32,.06);
+  --font-display:"Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --font-body:"IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:"IBM Plex Mono", "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161A; --surface:#171E22; --surface-2:#1E262B; --surface-3:#263038;
+    --ink:#ECEFE8; --ink-soft:#AEB8AE; --ink-faint:#7E8A84; --line:#2B3338;
+    --accent:#E0813D; --accent-ink:#171107; --accent-soft:#3A2A1C;
+    --accent2:#7FB0CF; --accent2-soft:#1E2E36;
+    --phase2:#B591C7; --phase3:#6FC2B8;
+    --good:#5FBE8B; --good-soft:#17291F;
+    --warn:#D7AE4E; --warn-soft:#2E2512;
+    --bad:#E2766A; --bad-soft:#301C1A;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 8px 20px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161A; --surface:#171E22; --surface-2:#1E262B; --surface-3:#263038;
+  --ink:#ECEFE8; --ink-soft:#AEB8AE; --ink-faint:#7E8A84; --line:#2B3338;
+  --accent:#E0813D; --accent-ink:#171107; --accent-soft:#3A2A1C;
+  --accent2:#7FB0CF; --accent2-soft:#1E2E36;
+  --phase2:#B591C7; --phase3:#6FC2B8;
+  --good:#5FBE8B; --good-soft:#17291F;
+  --warn:#D7AE4E; --warn-soft:#2E2512;
+  --bad:#E2766A; --bad-soft:#301C1A;
+  --shadow:0 1px 2px rgba(0,0,0,.45), 0 8px 20px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  font-size:15px; line-height:1.45; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:700; margin:0; text-wrap:balance; letter-spacing:.2px;}
+button,input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
+a{color:var(--accent2);}
+::selection{background:var(--accent-soft);}
+
+.topbar{
+  position:sticky; top:0; z-index:30; background:var(--surface);
+  border-bottom:1px solid var(--line); box-shadow:var(--shadow);
+}
+.topbar-inner{max-width:1280px; margin:0 auto; padding:14px 22px 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:14px 22px;}
+.brand{display:flex; align-items:baseline; gap:10px; margin-right:auto;}
+.brand .mark{
+  width:30px; height:30px; border-radius:7px; background:var(--accent); color:var(--accent-ink);
+  display:flex; align-items:center; justify-content:center; font-family:var(--font-display);
+  font-size:15px; font-weight:700; flex:none; align-self:center;
+}
+.brand h1{font-size:19px; color:var(--ink);}
+.brand .tagline{font-size:12px; color:var(--ink-faint); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em;}
+.company{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em; align-self:center;}
+
+.statstrip{
+  max-width:1280px; margin:0 auto; padding:12px 22px 14px; display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:1px; background:var(--line);
+  border-radius:10px; overflow:hidden; margin-top:12px; border:1px solid var(--line);
+}
+.stat{background:var(--surface-2); padding:9px 14px 10px;}
+.stat .lbl{font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); font-family:var(--font-mono);}
+.stat .val{font-family:var(--font-mono); font-size:19px; font-weight:500; font-variant-numeric:tabular-nums; margin-top:2px;}
+.stat .val small{font-size:11px; color:var(--ink-faint); font-weight:400;}
+
+.tabs{max-width:1280px; margin:16px auto 0; padding:0 22px; display:flex; gap:6px; border-bottom:1px solid var(--line);}
+.tab-btn{
+  background:none; border:none; padding:10px 16px; cursor:pointer; font-family:var(--font-display);
+  font-weight:700; font-size:14.5px; color:var(--ink-faint); border-bottom:2px solid transparent;
+  margin-bottom:-1px; display:flex; align-items:center; gap:7px;
+}
+.tab-btn .n{font-family:var(--font-mono); font-size:11px; background:var(--surface-3); color:var(--ink-soft); border-radius:99px; padding:1px 7px;}
+.tab-btn.active{color:var(--accent); border-bottom-color:var(--accent);}
+.tab-btn:hover{color:var(--ink);}
+
+main{max-width:1280px; margin:0 auto; padding:22px; display:flex; flex-direction:column; gap:18px;}
+.panel{display:none; flex-direction:column; gap:18px;}
+.panel.active{display:flex;}
+
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px 20px; box-shadow:var(--shadow);
+}
+.card > h2{font-size:17px; display:flex; align-items:center; gap:9px; margin-bottom:4px;}
+.card > h2 .idx{font-family:var(--font-mono); font-size:12px; color:var(--accent); border:1px solid var(--accent); border-radius:99px; width:20px; height:20px; display:flex; align-items:center; justify-content:center; flex:none;}
+.card .hint{font-size:12.5px; color:var(--ink-faint); margin-top:2px; margin-bottom:14px;}
+.card .hint code{font-family:var(--font-mono); background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+
+.grid{display:grid; gap:14px;}
+.grid.cols-2{grid-template-columns:repeat(2,1fr);}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:860px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
+
+label.field{display:flex; flex-direction:column; gap:5px; font-size:12.5px;}
+label.field > span{color:var(--ink-soft); font-weight:500;}
+label.field.check{flex-direction:row; align-items:center; gap:8px; font-size:13px;}
+input,select,textarea{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:7px;
+  padding:8px 10px; color:var(--ink); min-width:0;
+}
+textarea{resize:vertical; font-family:var(--font-body);}
+input:focus,select:focus,textarea:focus,button:focus-visible{
+  outline:2px solid var(--accent2); outline-offset:1px;
+}
+input[type="number"]{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+input[type="checkbox"]{width:16px; height:16px; accent-color:var(--accent);}
+
+.btn{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:9px 15px;
+  cursor:pointer; font-weight:600; font-size:13px; display:inline-flex; align-items:center; gap:7px;
+  color:var(--ink); white-space:nowrap;
+}
+.btn:hover{border-color:var(--ink-faint);}
+.btn.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+.btn.primary:hover{filter:brightness(1.07);}
+.btn.ghost{background:transparent;}
+.btn.small{padding:5px 10px; font-size:12px; border-radius:6px;}
+.btn.danger{color:var(--bad);}
+.btnrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+
+table{width:100%; border-collapse:collapse; font-size:13px;}
+.tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:9px;}
+th,td{padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+thead th{
+  background:var(--surface-2); font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--ink-soft); font-weight:500; position:sticky; top:0;
+}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--surface-2);}
+td.num,th.num{text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+td input, td select{width:100%; padding:5px 7px; font-size:12.5px;}
+td.compact{white-space:nowrap;}
+tfoot td{font-weight:600; background:var(--surface-2); border-top:2px solid var(--line); border-bottom:none; font-family:var(--font-mono);}
+.section-row td{background:var(--accent2-soft); font-family:var(--font-display); font-weight:700; color:var(--accent2); letter-spacing:.03em; font-size:12.5px; text-transform:uppercase;}
+
+.pill{display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:99px; font-size:11.5px; font-weight:600; font-family:var(--font-mono); white-space:nowrap;}
+.pill.good{background:var(--good-soft); color:var(--good);}
+.pill.warn{background:var(--warn-soft); color:var(--warn);}
+.pill.bad{background:var(--bad-soft); color:var(--bad);}
+.pill.neutral{background:var(--surface-3); color:var(--ink-soft);}
+.pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor; flex:none;}
+
+.chip{display:inline-flex; align-items:center; background:var(--accent-soft); color:var(--accent); border-radius:6px; padding:2px 8px; font-size:11.5px; font-weight:600; font-family:var(--font-mono);}
+
+.empty{padding:28px; text-align:center; color:var(--ink-faint); font-size:13.5px;}
+.empty .btn{margin-top:10px;}
+
+.disclaimer{
+  font-size:12px; color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--line);
+  border-radius:9px; padding:10px 14px; line-height:1.5;
+}
+.disclaimer b{color:var(--ink-soft);}
+
+footer{max-width:1280px; margin:0 auto; padding:10px 22px 40px; font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+
+.rowflex{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+.panelboard{
+  border:3px solid var(--accent2); border-radius:10px; background:var(--surface-2);
+  padding:16px; max-width:820px;
+}
+.panelboard-head{
+  font-family:var(--font-display); font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+  text-align:center; font-size:14px; color:var(--accent2); padding-bottom:10px; border-bottom:1px solid var(--line);
+}
+.panelboard-main{
+  background:var(--accent2-soft); border:1.5px solid var(--accent2); border-radius:7px; padding:9px;
+  text-align:center; font-family:var(--font-mono); font-weight:700; font-size:13px; color:var(--accent2);
+  margin:12px 0 16px;
+}
+.panelboard-cols{display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; position:relative;}
+.panelboard-cols::before{
+  content:""; position:absolute; left:50%; top:0; bottom:0; width:0; border-left:1px dashed var(--line);
+}
+.panelboard-col{display:flex; flex-direction:column; gap:7px;}
+.slot{
+  display:flex; gap:9px; align-items:flex-start; border:1.5px solid var(--line); border-radius:7px;
+  padding:7px 9px; background:var(--surface); min-height:46px;
+}
+.slot.warn{border-color:var(--warn);}
+.slot.bad{border-color:var(--bad);}
+.slot.reserve{border-style:dashed; opacity:.5; align-items:center; justify-content:center;}
+.slot-num{
+  font-family:var(--font-mono); font-weight:700; font-size:11px; width:22px; height:22px; border-radius:50%;
+  background:var(--surface-3); color:var(--ink-soft); display:flex; align-items:center; justify-content:center; flex:none;
+}
+.slot-body{display:flex; flex-direction:column; gap:2px; min-width:0;}
+.slot-top{display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
+.slot-breaker{font-family:var(--font-mono); font-weight:600; font-size:12px; color:var(--ink);}
+.slot-phase{font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); border:1px solid var(--line); border-radius:4px; padding:0 4px;}
+.slot-desc{font-size:11px; color:var(--ink-soft); line-height:1.35;}
+@media (max-width:620px){ .panelboard-cols{grid-template-columns:1fr;} .panelboard-cols::before{display:none;} }
+
+@media print{
+  .topbar, .tabs, .btnrow, .no-print{display:none !important;}
+  body{background:#fff; color:#000;}
+  main{padding:0;}
+  .panel{display:flex !important;}
+  .card{box-shadow:none; border:1px solid #999; break-inside:avoid;}
+  .tablewrap{border:1px solid #999;}
+  thead th{background:#eee !important; color:#000 !important;}
+  .pill{border:1px solid currentColor;}
+  .panelboard{break-inside:avoid; border-color:#333;}
+  .slot{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="mark">Ω</div>
+      <div>
+        <h1>Cálculo Eléctrico y Circuitos</h1>
+        <div class="tagline">Consumo de cargas → dimensionamiento de circuitos</div>
+      </div>
+    </div>
+    <div class="company">Conectatech · Ingeniería Albamar</div>
+  </div>
+  <div class="statstrip" id="statstrip"></div>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="proyecto">1 · Proyecto</button>
+    <button class="tab-btn" data-tab="cargas">2 · Cargas <span class="n" id="tab-n-cargas">0</span></button>
+    <button class="tab-btn" data-tab="resultados">3 · Circuitos y resultados</button>
+    <button class="tab-btn" data-tab="diagrama">4 · Diagrama unilineal</button>
+    <button class="tab-btn" data-tab="tablero">5 · Tablero eléctrico</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============ PANEL 1: PROYECTO ============ -->
+  <section class="panel active" id="panel-proyecto">
+
+    <div class="card">
+      <h2><span class="idx">1</span>Datos del proyecto</h2>
+      <div class="grid cols-4">
+        <label class="field"><span>Nombre del proyecto</span><input id="p-nombre" type="text" placeholder="Ej: Sala de Monitoreo El Tabo"></label>
+        <label class="field"><span>Cliente</span><input id="p-cliente" type="text" placeholder="Ej: Municipalidad de El Tabo"></label>
+        <label class="field"><span>Ubicación</span><input id="p-ubicacion" type="text" placeholder="Ej: El Tabo, Región de Valparaíso"></label>
+        <label class="field"><span>Fecha</span><input id="p-fecha" type="date"></label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Responsable / calculista</span><input id="p-responsable" type="text" placeholder="Nombre del ingeniero(a)"></label>
+        <label class="field"><span>N° de proyecto / referencia</span><input id="p-ref" type="text" placeholder="Opcional"></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">2</span>Parámetros eléctricos</h2>
+      <p class="hint">Preconfigurado para Chile (220V/380V · 50Hz, calibres en mm², referencia NCh Elec 4/2003). Cámbielo si el proyecto es en otro país o usa otra norma — todo es editable.</p>
+      <div class="grid cols-4">
+        <label class="field"><span>Sistema de tensión</span>
+          <select id="p-sistema">
+            <option value="cl">220V 1F / 380V 3F · 50Hz (Chile)</option>
+            <option value="us120">120V 1F / 208V 3F · 60Hz</option>
+            <option value="us120_240">120V / 240V 1F · 60Hz</option>
+            <option value="eu230">230V 1F / 400V 3F · 50Hz</option>
+            <option value="custom">Personalizado…</option>
+          </select>
+        </label>
+        <label class="field"><span>Tensión fase-neutro (V)</span><input id="p-vfase" type="number" step="1" value="220"></label>
+        <label class="field"><span>Tensión entre fases (V)</span><input id="p-vlinea" type="number" step="1" value="380"></label>
+        <label class="field"><span>Frecuencia (Hz)</span><input id="p-hz" type="number" step="1" value="50"></label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Alimentador principal</span>
+          <select id="p-alim-fases"><option value="3">Trifásico</option><option value="1">Monofásico</option></select>
+        </label>
+        <label class="field"><span>Sistema de calibres</span>
+          <select id="p-calibre"><option value="mm2">mm² (IEC / NCh)</option><option value="awg">AWG (NEC)</option></select>
+        </label>
+        <label class="field"><span>Material del conductor</span>
+          <select id="p-material"><option value="cu">Cobre</option><option value="al">Aluminio</option></select>
+        </label>
+        <label class="field"><span>Serie de protecciones</span>
+          <select id="p-serie"><option value="iec">IEC (6,10,16,20,25,32…A)</option><option value="nema">NEMA/UL (15,20,30,40…A)</option></select>
+        </label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Caída de tensión máx. — circuito ramal (%)</span><input id="p-cmax-ramal" type="number" step="0.1" value="3"></label>
+        <label class="field"><span>Caída de tensión máx. — total (%)</span><input id="p-cmax-total" type="number" step="0.1" value="5"></label>
+        <label class="field"><span>Factor de utilización por circuito (0–1)</span><input id="p-util" type="number" step="0.05" min="0.1" max="1" value="0.8"></label>
+        <label class="field"><span>Umbral para circuito dedicado (W)</span><input id="p-umbral" type="number" step="50" value="1500"></label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Longitud estimada del alimentador principal (m)</span><input id="p-long-alim" type="number" step="1" placeholder="Opcional"></label>
+        <label class="field"><span>Nombre del tablero principal</span><input id="p-tablero-nombre" type="text" placeholder="Ej: TD-1"></label>
+        <label class="field"><span>N° de polos del tablero</span><input id="p-tablero-polos" type="number" step="1" min="2" placeholder="Automático"></label>
+      </div>
+      <p class="disclaimer" style="margin-top:14px;">
+        <b>Nota técnica:</b> las tablas de ampacidad y caída de tensión usadas aquí son valores de referencia orientativos para anteproyecto.
+        Antes de construir, verifique calibres y protecciones contra la tabla oficial de la norma aplicable al proyecto
+        (en Chile, NCh Elec 4/2003 / exigencias SEC) según método de instalación, temperatura ambiente y agrupamiento real de conductores.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">3</span>Equipos de respaldo (generador / UPS)</h2>
+      <p class="hint">Se muestran en el diagrama unilineal como fuente de respaldo aguas arriba (generador, a través de un tablero de transferencia/ATS) y aguas abajo (UPS) del tablero principal. En «Cargas» puede marcar, carga por carga, si queda <b>respaldada</b> por el generador — por ejemplo, el aire acondicionado normalmente se excluye.</p>
+      <div class="grid cols-4">
+        <label class="field check"><input id="p-gen-hab" type="checkbox"><span>Grupo generador diésel</span></label>
+        <label class="field"><span>Potencia generador (kVA)</span><input id="p-gen-kva" type="number" step="0.5" min="0"></label>
+        <label class="field"><span>Fases del generador</span>
+          <select id="p-gen-fases"><option value="1">Monofásico</option><option value="3">Trifásico</option></select>
+        </label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field check"><input id="p-ups-hab" type="checkbox"><span>UPS</span></label>
+        <label class="field"><span>Potencia UPS (kVA)</span><input id="p-ups-kva" type="number" step="0.5" min="0"></label>
+        <label class="field"><span>El UPS alimenta</span><input id="p-ups-alimenta" type="text" placeholder="Ej: Rack / cargas críticas"></label>
+        <label class="field"><span>Circuito del tablero que alimenta al UPS</span>
+          <select id="p-ups-circuito"></select>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">4</span>Tipos de circuito</h2>
+      <p class="hint">Cada carga de la pestaña «Cargas» se asigna a uno de estos tipos. El <b>factor de potencia</b> y <b>fases</b> son el valor por defecto al crear una carga nueva (editable fila por fila). El <b>factor de demanda</b> se aplica al sumar el consumo total — déjelo en 100% si no corresponde aplicar demanda diversificada. El <b>breaker objetivo de agrupación</b> es la capacidad con la que el sistema intenta agrupar varias cargas pequeñas en un mismo circuito ramal.</p>
+      <div class="tablewrap">
+        <table id="tipos-table">
+          <thead><tr>
+            <th>Tipo de circuito</th><th class="num">FP def.</th><th class="num">Fases def.</th>
+            <th class="num">FD (%)</th><th class="num">Breaker objetivo (A)</th><th></th>
+          </tr></thead>
+          <tbody id="tipos-body"></tbody>
+        </table>
+      </div>
+      <div class="btnrow" style="margin-top:10px;">
+        <button class="btn small" id="btn-add-tipo">+ Agregar tipo de circuito</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 2: CARGAS ============ -->
+  <section class="panel" id="panel-cargas">
+    <div class="card">
+      <div class="rowflex">
+        <div>
+          <h2><span class="idx">1</span>Listado de cargas</h2>
+          <p class="hint">Mismas columnas que su planilla de cálculo: Tipo de circuito, Tag/Equipo, Lugar, Características, Cantidad y Potencia unitaria (W). El sistema agrega fases, FP, continuidad y longitud para poder calcular corriente, breaker y conductor.</p>
+        </div>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-ejemplo">Cargar ejemplo (Sala El Tabo)</button>
+          <button class="btn small danger" id="btn-vaciar">Vaciar listado</button>
+        </div>
+      </div>
+      <div class="tablewrap">
+        <table id="cargas-table">
+          <thead><tr>
+            <th style="min-width:150px;">Tipo de circuito</th>
+            <th style="min-width:150px;">Tag / Equipo</th>
+            <th style="min-width:130px;">Lugar</th>
+            <th style="min-width:130px;">Características</th>
+            <th class="num" style="width:70px;">Cant.</th>
+            <th class="num" style="width:95px;">Pot. unit. (W)</th>
+            <th class="num" style="width:95px;">Pot. total (W)</th>
+            <th class="num" style="width:75px;">FP</th>
+            <th class="num" style="width:70px;">Fases</th>
+            <th style="width:60px;" title="Carga continua (>3h)">Cont.</th>
+            <th style="width:60px;" title="Forzar circuito dedicado">Dedic.</th>
+            <th style="width:60px;" title="¿Esta carga queda respaldada por el generador/UPS?">Resp.</th>
+            <th class="num" style="width:80px;">Long. (m)</th>
+            <th class="num" style="width:75px;">I (A)</th>
+            <th style="width:40px;"></th>
+          </tr></thead>
+          <tbody id="cargas-body"></tbody>
+          <tfoot><tr>
+            <td colspan="6">TOTAL</td>
+            <td class="num" id="tot-pw">0</td>
+            <td colspan="6"></td>
+            <td class="num" id="tot-i">0</td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <div class="btnrow" style="margin-top:10px;">
+        <button class="btn small primary" id="btn-add-carga">+ Agregar carga</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL 3: RESULTADOS ============ -->
+  <section class="panel" id="panel-resultados">
+
+    <div class="card">
+      <h2><span class="idx">1</span>Resumen de demanda por tipo de circuito</h2>
+      <div class="tablewrap">
+        <table id="resumen-table">
+          <thead><tr>
+            <th>Tipo de circuito</th>
+            <th class="num">Potencia instalada (W)</th>
+            <th class="num">Potencia instalada (VA)</th>
+            <th class="num">FD aplicado</th>
+            <th class="num">Demanda (W)</th>
+            <th class="num">Demanda (VA)</th>
+          </tr></thead>
+          <tbody id="resumen-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">2</span>Alimentador principal sugerido</h2>
+      <div id="alimentador-box"></div>
+    </div>
+
+    <div class="card">
+      <div class="rowflex">
+        <h2><span class="idx">3</span>Cuadro de circuitos generado</h2>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-print">Imprimir / exportar PDF</button>
+          <button class="btn small" id="btn-csv">Exportar CSV</button>
+          <button class="btn small" id="btn-export-json">Guardar proyecto (.json)</button>
+          <label class="btn small" style="cursor:pointer;">Cargar proyecto (.json)<input type="file" id="input-json" accept=".json" style="display:none;"></label>
+        </div>
+      </div>
+      <p class="hint">Agrupación automática por tipo de circuito, fases y continuidad, respetando el factor de utilización definido en «Proyecto». Las cargas marcadas como <b>dedicadas</b> (o cuya corriente ya supera el objetivo de agrupación) reciben su propio circuito.</p>
+      <div id="circuitos-wrap"></div>
+    </div>
+
+    <div class="card">
+      <h2>Notas y advertencias</h2>
+      <div id="avisos-box"></div>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 4: DIAGRAMA UNIFILAR ============ -->
+  <section class="panel" id="panel-diagrama">
+    <div class="card">
+      <div class="rowflex">
+        <h2><span class="idx">1</span>Diagrama unilineal / unifilar (automático)</h2>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-print-2">Imprimir / exportar PDF</button>
+          <button class="btn small" id="btn-svg">Descargar SVG</button>
+          <button class="btn small" id="btn-dxf">Descargar DXF (AutoCAD)</button>
+        </div>
+      </div>
+      <p class="hint">Generado automáticamente a partir del cuadro de circuitos: red pública → medidor → (generador + ATS, si están habilitados) → <b>protección diferencial general</b> → <b>interruptor general del TG</b> (con <b>puesta a tierra de protección, PAT</b>) → barra → cada circuito ramal → UPS. Incorpora los elementos que exige habitualmente el Pliego Técnico Normativo <b>RIC N°18</b> (SEC, Chile) para diagramas unilineales de baja tensión en instalaciones de consumo.</p>
+      <p class="disclaimer">
+        <b>Importante:</b> esta herramienta aplica los criterios generales de RIC N°18 que conoce (diferencial general, PAT, tablero general, protección+calibre+tipo por circuito), pero no reemplaza la revisión de un <b>instalador eléctrico autorizado</b>. Antes de presentar el proyecto a la SEC, verifique con esa persona la sensibilidad/selectividad de las protecciones diferenciales, la necesidad de diferenciales adicionales en circuitos específicos (baños, cocina, exteriores), el diseño de la puesta a tierra y cualquier otro requisito vigente de la norma.
+      </p>
+      <div class="tablewrap" style="background:var(--surface); padding:6px;" id="diagrama-wrap"></div>
+      <div class="rowflex" style="margin-top:10px; gap:18px 14px; flex-wrap:wrap;">
+        <span class="pill neutral"><span class="dot" style="background:var(--accent2);"></span>red / tablero</span>
+        <span class="pill neutral"><span class="dot" style="background:var(--accent);"></span>generador / UPS</span>
+        <span class="pill neutral"><span class="dot" style="background:var(--ink-soft);"></span>monofásico (línea discontinua)</span>
+        <span class="pill warn"><span class="dot"></span>uso &gt; 90%</span>
+        <span class="pill bad"><span class="dot"></span>con advertencia — revisar</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL 5: TABLERO ELÉCTRICO ============ -->
+  <section class="panel" id="panel-tablero">
+    <div class="card">
+      <div class="rowflex">
+        <h2><span class="idx">1</span>Vista del tablero</h2>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-print-3">Imprimir / exportar PDF</button>
+          <button class="btn small" id="btn-svg-tablero">Descargar SVG</button>
+          <button class="btn small" id="btn-dxf-tablero">Descargar DXF (AutoCAD)</button>
+        </div>
+      </div>
+      <p class="hint">Plano completo del tablero, con todos sus componentes identificados: protección diferencial general (30 mA), interruptor general del TG, puesta a tierra de protección (PAT), peine de fases, cada polo con su palanca/calibre/N° de circuito, y — si están habilitados en «Proyecto» — el generador + ATS arriba y el UPS conectado al costado desde su circuito real. Exportable a DXF con capas (RED, PROTECCIONES, TIERRA, RESPALDO, CIRCUITOS) y cajetín con los datos del proyecto.</p>
+      <p class="disclaimer">Incluye los elementos generales de RIC N°18 que maneja esta herramienta. El tamaño/forma real de breakers, riel DIN y gabinete depende del fabricante elegido, y el plano definitivo debe ser validado por el instalador eléctrico autorizado antes de presentarlo a la SEC.</p>
+      <div id="tablero-aviso"></div>
+      <div class="tablewrap" style="background:var(--surface); padding:10px;" id="tablero-dibujo-wrap"></div>
+      <div class="rowflex" style="margin-top:10px; gap:18px;">
+        <span class="pill neutral"><span class="dot" style="background:var(--accent2);"></span>fase L1</span>
+        <span class="pill neutral"><span class="dot" style="background:var(--phase2);"></span>fase L2</span>
+        <span class="pill neutral"><span class="dot" style="background:var(--phase3);"></span>fase L3</span>
+        <span class="pill warn"><span class="dot"></span>uso &gt; 90%</span>
+        <span class="pill bad"><span class="dot"></span>con advertencia</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">2</span>Directorio de circuitos</h2>
+      <p class="hint">Mismo tablero anterior en formato de lista — polos impares a la izquierda, pares a la derecha, numerados de arriba hacia abajo. Las fases se asignan en forma rotativa (L1, L2, L3) para balancear la carga.</p>
+      <div id="tablero-wrap"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Herramienta de apoyo para anteproyecto — no reemplaza el cálculo y verificación de un profesional responsable ni la memoria de cálculo exigida por la norma vigente. · Guardado automático en este navegador.
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ========================= TABLAS DE REFERENCIA ========================= */
+
+const BREAKER_SERIES = {
+  iec:  [6,10,16,20,25,32,40,50,63,80,100,125,160,200,225,250,315,400,500,630],
+  nema: [15,20,25,30,35,40,45,50,60,70,80,90,100,110,125,150,175,200,225,250,300,350,400]
+};
+
+// Cobre, referencia orientativa (PVC, instalación en ducto/bandeja, ~30°C ambiente)
+const WIRE_MM2 = [
+  {label:'1.5 mm²', mm2:1.5, amp:15},
+  {label:'2.5 mm²', mm2:2.5, amp:21},
+  {label:'4 mm²',   mm2:4,   amp:28},
+  {label:'6 mm²',   mm2:6,   amp:36},
+  {label:'10 mm²',  mm2:10,  amp:50},
+  {label:'16 mm²',  mm2:16,  amp:68},
+  {label:'25 mm²',  mm2:25,  amp:89},
+  {label:'35 mm²',  mm2:35,  amp:110},
+  {label:'50 mm²',  mm2:50,  amp:134},
+  {label:'70 mm²',  mm2:70,  amp:171},
+  {label:'95 mm²',  mm2:95,  amp:207},
+  {label:'120 mm²', mm2:120, amp:239},
+  {label:'150 mm²', mm2:150, amp:299},
+  {label:'185 mm²', mm2:185, amp:341},
+  {label:'240 mm²', mm2:240, amp:403}
+];
+// Cobre 75°C, referencia tipo NEC Tabla 310.16 (simplificada)
+const WIRE_AWG = [
+  {label:'14 AWG', amp:20,  rPerKm:8.286, mm2:2.08},
+  {label:'12 AWG', amp:25,  rPerKm:5.211, mm2:3.31},
+  {label:'10 AWG', amp:35,  rPerKm:3.277, mm2:5.26},
+  {label:'8 AWG',  amp:50,  rPerKm:2.061, mm2:8.37},
+  {label:'6 AWG',  amp:65,  rPerKm:1.296, mm2:13.3},
+  {label:'4 AWG',  amp:85,  rPerKm:0.8151,mm2:21.2},
+  {label:'3 AWG',  amp:100, rPerKm:0.6466,mm2:26.7},
+  {label:'2 AWG',  amp:115, rPerKm:0.5127,mm2:33.6},
+  {label:'1 AWG',  amp:130, rPerKm:0.4066,mm2:42.4},
+  {label:'1/0 AWG',amp:150, rPerKm:0.3224,mm2:53.5},
+  {label:'2/0 AWG',amp:175, rPerKm:0.2557,mm2:67.4},
+  {label:'3/0 AWG',amp:200, rPerKm:0.2028,mm2:85.0},
+  {label:'4/0 AWG',amp:230, rPerKm:0.1608,mm2:107},
+  {label:'250 kcmil',amp:255,rPerKm:0.1360,mm2:127},
+  {label:'300 kcmil',amp:285,rPerKm:0.1133,mm2:152},
+  {label:'350 kcmil',amp:310,rPerKm:0.0971,mm2:177},
+  {label:'400 kcmil',amp:335,rPerKm:0.0848,mm2:203},
+  {label:'500 kcmil',amp:380,rPerKm:0.0686,mm2:253}
+];
+const AL_DERATE = 0.78; // factor aproximado ampacidad aluminio vs cobre, mismo calibre nominal
+const RHO_CU = 0.0178;  // Ohm*mm2/m, resistividad cobre ~20°C (valor práctico)
+
+const TIPOS_DEFAULT = [
+  {nombre:'Fuerza',         fp:0.90, fases:1, fd:100, breaker:20},
+  {nombre:'Alumbrado',      fp:1.00, fases:1, fd:100, breaker:16},
+  {nombre:'Tomacorrientes', fp:1.00, fases:1, fd:100, breaker:20},
+  {nombre:'Control',        fp:1.00, fases:1, fd:100, breaker:10},
+  {nombre:'Climatización',  fp:0.85, fases:1, fd:100, breaker:32},
+  {nombre:'Respaldo/UPS',   fp:0.95, fases:1, fd:100, breaker:16}
+];
+
+const SISTEMAS = {
+  cl:        {vfase:220, vlinea:380, hz:50, calibre:'mm2', serie:'iec'},
+  us120:     {vfase:120, vlinea:208, hz:60, calibre:'awg', serie:'nema'},
+  us120_240: {vfase:120, vlinea:240, hz:60, calibre:'awg', serie:'nema'},
+  eu230:     {vfase:230, vlinea:400, hz:50, calibre:'mm2', serie:'iec'}
+};
+
+const EJEMPLO_CARGAS = [
+  ['Fuerza','Aire Acondicionado','Sala Monitoreo','24.000 BTU',1,7030],
+  ['Fuerza','Pantallas Monitoreo','Planta Alta','55"',6,160],
+  ['Fuerza','Pantallas Monitoreo','Planta Baja','55"',6,160],
+  ['Fuerza','Estación de Trabajo','Operadores','AIO 22"',4,180],
+  ['Fuerza','Estación de Trabajo','Jefe Sala Monitoreo','AIO 22"',1,180],
+  ['Fuerza','Decoder Video Wall','Pantallas Monitoreo','16 Ch',1,100],
+  ['Fuerza','NVR Storage Sala','Sistema de Grabación Local','17 Ch',2,250],
+  ['Fuerza','Switch de Datos','Conmutación Local','24 ch',2,60],
+  ['Fuerza','UPS Respaldo Rack','Sala Monitoreo','2 kVA',1,50],
+  ['Fuerza','UPS Respaldo Rack','Operadores','0,6 kVA',5,30],
+  ['Alumbrado','Barra Led Perimetral','Sala Monitoreo','Equipo Led',1,120],
+  ['Alumbrado','Alumbrado General 1','Sala Monitoreo','Equipo Led',2,40],
+  ['Alumbrado','Alumbrado General 2','Sala Monitoreo','Equipo Led',2,40],
+  ['Control','Tablero Transferencia','Sala de Monitoreo','Grupo Generador',1,30]
+];
+
+/* ========================= ESTADO ========================= */
+
+const DEFAULT_PROYECTO = {nombre:'',cliente:'',ubicacion:'',fecha:'',responsable:'',ref:'',
+  sistema:'cl', vfase:220, vlinea:380, hz:50, alimFases:3,
+  calibre:'mm2', material:'cu', serie:'iec',
+  cmaxRamal:3, cmaxTotal:5, util:0.8, umbral:1500, longAlim:null,
+  tableroNombre:'TD-1', tableroPolos:null,
+  genHabilitado:true, genKva:10, genFases:1,
+  upsHabilitado:true, upsKva:2, upsAlimenta:'Cargas críticas (rack / sala de monitoreo)', upsCircuito:null};
+
+let state = {
+  proyecto: Object.assign({}, DEFAULT_PROYECTO),
+  tipos: JSON.parse(JSON.stringify(TIPOS_DEFAULT)),
+  cargas: []
+};
+// Rellena con los valores por defecto cualquier campo que falte en un estado
+// cargado (autoguardado viejo o .json importado de antes de agregar una opción
+// nueva), sin pisar lo que el usuario ya haya configurado.
+function completarProyecto(p){
+  return Object.assign({}, DEFAULT_PROYECTO, p||{});
+}
+let idSeq = 1;
+function nextId(){ return 'c' + (idSeq++); }
+
+/* ========================= UTILIDADES ========================= */
+
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+const nf0 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:0});
+const nf1 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:1,minimumFractionDigits:0});
+const nf2 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:2,minimumFractionDigits:0});
+function fmt(n,d){ if(n==null||isNaN(n)) return '—'; return d===2?nf2.format(n):d===1?nf1.format(n):nf0.format(n); }
+
+function wireTable(){ return state.proyecto.calibre==='mm2' ? WIRE_MM2 : WIRE_AWG; }
+function breakerSeries(){ return BREAKER_SERIES[state.proyecto.serie] || BREAKER_SERIES.iec; }
+
+function ampacityOf(row){
+  const base = row.amp;
+  return state.proyecto.material==='al' ? base*AL_DERATE : base;
+}
+function pickConductorForAmpacity(current){
+  const table = wireTable();
+  for(const row of table){ if(ampacityOf(row) >= current) return row; }
+  return table[table.length-1];
+}
+function pickBreaker(current){
+  const series = breakerSeries();
+  for(const b of series){ if(b >= current) return b; }
+  return series[series.length-1];
+}
+function resistanciaPorMetro(row){
+  // Ohm/m. mm2: R' = rho(Ohm*mm2/m) / S(mm2). awg: la tabla trae Ohm/km -> Ohm/m.
+  if(state.proyecto.calibre==='mm2') return RHO_CU/row.mm2;
+  return row.rPerKm/1000;
+}
+function caidaTensionPct(current, lengthM, fases, vRef, row){
+  if(!lengthM || lengthM<=0 || !row) return null;
+  const rPerM = resistanciaPorMetro(row);
+  const factor = fases===3 ? Math.sqrt(3) : 2;
+  const dV = factor*current*lengthM*rPerM;
+  return (dV/vRef)*100;
+}
+function dimensionarCircuito(current, fases, lengthM, vRef, limitePct){
+  const breaker = pickBreaker(current);
+  let conductor = pickConductorForAmpacity(Math.max(current,breaker));
+  let cdt = caidaTensionPct(current,lengthM,fases,vRef,conductor);
+  const table = wireTable();
+  let idx = table.indexOf(conductor);
+  const limite = lengthM ? (limitePct!=null?limitePct:state.proyecto.cmaxRamal) : null;
+  while(limite!=null && cdt!=null && cdt>limite && idx<table.length-1){
+    idx++; conductor = table[idx];
+    cdt = caidaTensionPct(current,lengthM,fases,vRef,conductor);
+  }
+  return {breaker, conductor, cdt};
+}
+
+function tipoOf(nombre){
+  return state.tipos.find(t=>t.nombre===nombre) || state.tipos[0];
+}
+
+/* ========================= CÁLCULO ========================= */
+
+function calcCarga(c){
+  const potTotalW = (Number(c.cantidad)||0) * (Number(c.potUnit)||0);
+  const fp = Number(c.fp)||1;
+  const potVA = fp>0 ? potTotalW/fp : potTotalW;
+  const vref = c.fases===3 ? state.proyecto.vlinea : state.proyecto.vfase;
+  let corriente;
+  if(c.fases===3){ corriente = potVA/(Math.sqrt(3)*state.proyecto.vlinea); }
+  else { corriente = potVA/state.proyecto.vfase; }
+  const corrienteDiseno = corriente * (c.continua ? 1.25 : 1.0);
+  return {potTotalW, potVA, corriente, corrienteDiseno, vref};
+}
+
+function calcularTodo(){
+  const cargasCalc = state.cargas.map(c=>Object.assign({}, c, {_calc: calcCarga(c)}));
+
+  // resumen por tipo
+  const porTipo = {};
+  state.tipos.forEach(t=> porTipo[t.nombre] = {nombre:t.nombre, pW:0, pVA:0, fd:t.fd});
+  cargasCalc.forEach(c=>{
+    if(!porTipo[c.tipo]) porTipo[c.tipo] = {nombre:c.tipo, pW:0, pVA:0, fd:100};
+    porTipo[c.tipo].pW += c._calc.potTotalW;
+    porTipo[c.tipo].pVA += c._calc.potVA;
+  });
+  const resumen = Object.values(porTipo);
+  resumen.forEach(r=>{ r.demW = r.pW*(r.fd/100); r.demVA = r.pVA*(r.fd/100); });
+
+  const totalPW = resumen.reduce((s,r)=>s+r.pW,0);
+  const totalPVA = resumen.reduce((s,r)=>s+r.pVA,0);
+  const totalDemW = resumen.reduce((s,r)=>s+r.demW,0);
+  const totalDemVA = resumen.reduce((s,r)=>s+r.demVA,0);
+
+  // potencia respaldada por generador/UPS (excluye cargas marcadas como no respaldadas, ej. A/A)
+  const respaldadas = cargasCalc.filter(c=>c.respaldado!==false);
+  const excluidas = cargasCalc.filter(c=>c.respaldado===false);
+  const respaldoW = respaldadas.reduce((s,c)=>s+c._calc.potTotalW,0);
+  const respaldoVA = respaldadas.reduce((s,c)=>s+c._calc.potVA,0);
+  const excluidoW = excluidas.reduce((s,c)=>s+c._calc.potTotalW,0);
+
+  const alimFases = Number(state.proyecto.alimFases)||3;
+  const vrefAlim = alimFases===3 ? state.proyecto.vlinea : state.proyecto.vfase;
+  const iTotal = alimFases===3 ? totalDemVA/(Math.sqrt(3)*state.proyecto.vlinea) : totalDemVA/state.proyecto.vfase;
+  const dimAlim = dimensionarCircuito(iTotal, alimFases, state.proyecto.longAlim, vrefAlim, state.proyecto.cmaxTotal);
+
+  // generación de circuitos: agrupar por tipo+fases, separar dedicados
+  const grupos = {};
+  cargasCalc.forEach(c=>{
+    const t = tipoOf(c.tipo);
+    const esDedicado = !!c.dedicado;
+    const key = c.tipo+'|'+c.fases;
+    if(!grupos[key]) grupos[key] = {tipo:c.tipo, fases:c.fases, breakerObjetivo:(t?t.breaker:20), items:[]};
+    grupos[key].items.push(c);
+  });
+
+  let circuitos = [];
+  let numCirc = 1;
+  Object.values(grupos).forEach(g=>{
+    const vref = g.fases===3 ? state.proyecto.vlinea : state.proyecto.vfase;
+    const cap = g.breakerObjetivo * state.proyecto.util;
+    const dedicadas = g.items.filter(c=>c.dedicado);
+    const agrupables = g.items.filter(c=>!c.dedicado).sort((a,b)=>b._calc.corrienteDiseno - a._calc.corrienteDiseno);
+
+    dedicadas.forEach(c=>{
+      const i = c._calc.corrienteDiseno;
+      const long = c.longitud || null;
+      const dim = dimensionarCircuito(i, g.fases, long, vref);
+      circuitos.push(buildCircuito(numCirc++, g.tipo, g.fases, [c], i, dim, long, vref, true));
+    });
+
+    // bin packing first-fit-decreasing
+    const bins = [];
+    agrupables.forEach(c=>{
+      const i = c._calc.corrienteDiseno;
+      let placed=false;
+      for(const b of bins){
+        if(b.items.length>0 && (b.total+i)<=cap){ b.items.push(c); b.total+=i; placed=true; break; }
+      }
+      if(!placed) bins.push({items:[c], total:i});
+    });
+    bins.forEach(b=>{
+      const i = b.total;
+      const long = b.items.reduce((m,c)=> Math.max(m, c.longitud||0), 0) || null;
+      const dim = dimensionarCircuito(i, g.fases, long, vref);
+      circuitos.push(buildCircuito(numCirc++, g.tipo, g.fases, b.items, i, dim, long, vref, false));
+    });
+  });
+
+  return {cargasCalc, resumen, totalPW, totalPVA, totalDemW, totalDemVA, iTotal, dimAlim, alimFases, vrefAlim, circuitos,
+    respaldoW, respaldoVA, excluidoW};
+}
+
+function buildCircuito(n, tipo, fases, items, iDiseno, dim, long, vref, dedicado){
+  const pctUso = dim.breaker>0 ? (iDiseno/dim.breaker)*100 : 0;
+  const avisos = [];
+  if(pctUso>100) avisos.push('Corriente de diseño supera el breaker asignado — revisar');
+  if(dim.cdt!=null && dim.cdt>state.proyecto.cmaxRamal) avisos.push('Caída de tensión estimada excede el máximo del circuito ramal ('+state.proyecto.cmaxRamal+'%)');
+  return {
+    n, tipo, fases, items, iDiseno,
+    breaker: dim.breaker, conductor: dim.conductor, cdt: dim.cdt,
+    long, vref, pctUso, dedicado, avisos
+  };
+}
+
+/* ========================= RENDER ========================= */
+
+function render(){
+  renderStats();
+  renderTipos();
+  renderCargas();
+  renderResultados();
+  renderDiagrama();
+  renderTablero(); renderTableroDibujo(); renderUpsCircuitoSelect(tableroLayout());
+  document.getElementById('tab-n-cargas').textContent = state.cargas.length;
+  saveLocal();
+}
+
+// Actualización liviana: recalcula totales y resultados SIN reconstruir las
+// tablas editables (cargas/tipos), para no perder el foco mientras se escribe.
+// El diagrama es de solo lectura (no tiene <input>), así que se puede
+// reconstruir siempre sin riesgo de perder el foco.
+function renderDerived(){
+  renderStats();
+  renderFooterCargas();
+  renderResultados();
+  renderDiagrama();
+  renderTablero(); renderTableroDibujo(); renderUpsCircuitoSelect(tableroLayout());
+  document.getElementById('tab-n-cargas').textContent = state.cargas.length;
+  saveLocal();
+}
+
+function renderFooterCargas(){
+  let sumaPW=0, sumaI=0;
+  state.cargas.forEach(c=>{ const calc = calcCarga(c); sumaPW += calc.potTotalW; sumaI += calc.corriente; });
+  document.getElementById('tot-pw').textContent = fmt(sumaPW,0);
+  document.getElementById('tot-i').textContent = fmt(sumaI,2);
+}
+
+// Actualiza solo las celdas calculadas (Potencia total / Corriente) de una fila,
+// sin tocar los <input> — así el cursor no se mueve mientras el usuario escribe.
+function patchCargaRow(c){
+  const tr = document.querySelector('#cargas-body tr[data-row="'+c.id+'"]');
+  if(!tr) return;
+  const calc = calcCarga(c);
+  const cells = tr.children;
+  if(cells[6]) cells[6].textContent = fmt(calc.potTotalW,0);
+  if(cells[13]) cells[13].textContent = fmt(calc.corriente,2);
+}
+
+function pillUso(pct){
+  if(pct>100) return '<span class="pill bad"><span class="dot"></span>'+fmt(pct,0)+'%</span>';
+  if(pct>90) return '<span class="pill warn"><span class="dot"></span>'+fmt(pct,0)+'%</span>';
+  return '<span class="pill good"><span class="dot"></span>'+fmt(pct,0)+'%</span>';
+}
+function pillCdt(cdt,max){
+  if(cdt==null) return '<span class="pill neutral">—</span>';
+  if(cdt>max) return '<span class="pill bad"><span class="dot"></span>'+fmt(cdt,2)+'%</span>';
+  return '<span class="pill good"><span class="dot"></span>'+fmt(cdt,2)+'%</span>';
+}
+
+function truncar(s,n){
+  s = String(s||'');
+  return s.length>n ? s.slice(0,n-1)+'…' : s;
+}
+function colorCircuito(c){
+  if(c.avisos && c.avisos.length) return 'var(--bad)';
+  if(c.pctUso>90) return 'var(--warn)';
+  return 'var(--accent2)';
+}
+// Símbolo simplificado de protección (no es simbología normalizada IEC/NEC,
+// es un marcador reconocible de "aquí hay un breaker" para un esquema de apoyo.
+function breakerSymbolSVG(cx, cy, color, big){
+  const w = big?30:24, h = big?24:18;
+  const x = cx - w/2, y = cy - h/2;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="fill:var(--surface);stroke:${color};stroke-width:1.8"/>`
+       + `<line x1="${x+4}" y1="${y+h-3}" x2="${x+w-4}" y2="${y+3}" style="stroke:${color};stroke-width:1.8"/>`;
+}
+
+function renderDiagrama(){
+  const wrap = document.getElementById('diagrama-wrap');
+  if(!wrap) return;
+  const r = calcularTodo();
+  const n = r.circuitos.length;
+  const hasGen = !!state.proyecto.genHabilitado;
+  const hasUps = !!state.proyecto.upsHabilitado;
+  const totalRows = n + (hasUps?1:0);
+
+  const width = 900;
+  const busX = 150;
+  // Pila vertical sobre la barra: medidor → (ATS+generador) → diferencial general → interruptor general (TG)
+  const meterCY = 40;
+  let _cy = meterCY;
+  const atsCY = hasGen ? (_cy += 46) : null;
+  const difCY = (_cy += 40);
+  const mainCY = (_cy += 44);
+  const genCX = busX + 118;
+  const rowH = 78;
+  const busTopY = mainCY + 44;
+  const rowCenterY = i => busTopY + i*rowH + rowH/2;
+  const busBottomY = totalRows>0 ? rowCenterY(totalRows-1) : busTopY + 30;
+  const height = Math.max(busBottomY, mainCY+40) + 40;
+
+  let svg = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<rect x="0" y="0" width="${width}" height="${height}" style="fill:var(--surface)"/>`;
+
+  // Red pública / empalme → medidor → (ATS + generador, si aplica) → interruptor general → barra del tablero
+  svg += `<text x="${busX}" y="2" text-anchor="middle" style="font:600 10px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">RED PÚBLICA</text>`;
+  svg += `<line x1="${busX}" y1="2" x2="${busX}" y2="${busBottomY}" style="stroke:var(--accent2);stroke-width:2.4"/>`;
+  svg += `<circle cx="${busX}" cy="${meterCY}" r="12" style="fill:var(--surface);stroke:var(--accent2);stroke-width:1.8"/>`;
+  svg += `<text x="${busX}" y="${meterCY+4}" text-anchor="middle" style="font:700 11px 'IBM Plex Mono',monospace;fill:var(--accent2)">M</text>`;
+  svg += `<text x="${busX+24}" y="${meterCY+4}" style="font:10px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">Medidor / empalme</text>`;
+
+  if(hasGen){
+    const genKva = Number(state.proyecto.genKva)||0;
+    const pctGen = genKva>0 ? (r.respaldoVA/1000)/genKva*100 : 0;
+    const genColor = pctGen>100 ? 'var(--bad)' : (pctGen>85 ? 'var(--warn)' : 'var(--accent)');
+    svg += `<line x1="${genCX}" y1="${atsCY}" x2="${busX+22}" y2="${atsCY}" style="stroke:var(--accent);stroke-width:2.2"/>`;
+    svg += `<circle cx="${genCX}" cy="${atsCY}" r="15" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.8"/>`;
+    svg += `<text x="${genCX}" y="${atsCY+4}" text-anchor="middle" style="font:700 12px 'IBM Plex Mono',monospace;fill:var(--accent)">G</text>`;
+    svg += `<text x="${genCX+22}" y="${atsCY-4}" style="font:600 11px 'IBM Plex Mono',monospace;fill:var(--ink)">GENERADOR DIÉSEL · ${fmt(genKva,1)} kVA · ${state.proyecto.genFases===3?'3F':'1F'}</text>`;
+    svg += `<text x="${genCX+22}" y="${atsCY+11}" style="font:10px 'IBM Plex Mono',monospace;fill:${genColor}">Respalda ${fmt(r.respaldoW/1000,2)} kW de ${fmt(r.totalPW/1000,2)} kW (${fmt(pctGen,0)}%)${pctGen>100?' ⚠ excede el generador':''}</text>`;
+    if(r.excluidoW>0){
+      svg += `<text x="${genCX+22}" y="${atsCY+25}" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">Fuera del respaldo: ${fmt(r.excluidoW,0)} W (marcado «sin respaldo» en Cargas)</text>`;
+    }
+    // ATS (transferencia automática) sobre la barra
+    svg += `<rect x="${busX-22}" y="${atsCY-13}" width="44" height="26" rx="4" style="fill:var(--surface);stroke:var(--accent2);stroke-width:1.8"/>`;
+    svg += `<text x="${busX}" y="${atsCY+4}" text-anchor="middle" style="font:700 10px 'IBM Plex Mono',monospace;fill:var(--accent2)">ATS</text>`;
+    svg += `<text x="${busX-26}" y="${atsCY-18}" text-anchor="end" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">Transferencia automática</text>`;
+  }
+
+  // Protección diferencial general (RIC N°18 — protección contra contactos indirectos)
+  svg += breakerSymbolSVG(busX, difCY, 'var(--accent2)', true);
+  svg += `<text x="${busX+24}" y="${difCY-2}" style="font:600 11px 'IBM Plex Mono',monospace;fill:var(--ink)">PROTECCIÓN DIFERENCIAL GENERAL</text>`;
+  svg += `<text x="${busX+24}" y="${difCY+13}" style="font:10px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">30 mA · verificar sensibilidad/selectividad según diseño</text>`;
+
+  svg += breakerSymbolSVG(busX, mainCY, 'var(--accent2)', true);
+  svg += `<text x="${busX+24}" y="${mainCY-2}" style="font:600 12px 'IBM Plex Mono',monospace;fill:var(--ink)">TG ${esc(state.proyecto.tableroNombre||'TD-1')} · INTERRUPTOR GENERAL ${fmt(r.dimAlim.breaker,0)} A · ${esc(r.dimAlim.conductor.label)}</text>`;
+  svg += `<text x="${busX+24}" y="${mainCY+14}" style="font:10px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">${r.alimFases===3?'Trifásico':'Monofásico'} · ${fmt(r.iTotal,1)} A${r.dimAlim.cdt!=null?(' · ΔV '+fmt(r.dimAlim.cdt,2)+'%'):''}</text>`;
+
+  // Puesta a tierra de protección (PAT), tomada en el tablero general
+  svg += `<line x1="${busX}" y1="${mainCY}" x2="${busX-42}" y2="${mainCY}" style="stroke:var(--good);stroke-width:1.8"/>`;
+  svg += `<line x1="${busX-42}" y1="${mainCY}" x2="${busX-42}" y2="${mainCY+14}" style="stroke:var(--good);stroke-width:1.8"/>`;
+  svg += `<line x1="${busX-50}" y1="${mainCY+14}" x2="${busX-34}" y2="${mainCY+14}" style="stroke:var(--good);stroke-width:1.8"/>`;
+  svg += `<line x1="${busX-47}" y1="${mainCY+18}" x2="${busX-37}" y2="${mainCY+18}" style="stroke:var(--good);stroke-width:1.8"/>`;
+  svg += `<line x1="${busX-44}" y1="${mainCY+22}" x2="${busX-40}" y2="${mainCY+22}" style="stroke:var(--good);stroke-width:1.8"/>`;
+  svg += `<text x="${busX-42}" y="${mainCY+36}" text-anchor="middle" style="font:700 9px 'IBM Plex Mono',monospace;fill:var(--good)">PAT</text>`;
+
+  if(n===0){
+    svg += `<text x="${busX+24}" y="${busTopY+20}" style="font:12px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">Sin circuitos generados — agregue cargas en la pestaña «Cargas».</text>`;
+  }
+
+  r.circuitos.forEach((c,i)=>{
+    const cy = rowCenterY(i);
+    const color = colorCircuito(c);
+    const dash = c.fases===3 ? '' : 'stroke-dasharray:6,4;';
+    const breakerCX = busX + 46;
+    const afterBreakerX = breakerCX + 18;
+    const labelX = afterBreakerX + 26;
+
+    svg += `<line x1="${busX}" y1="${cy}" x2="${breakerCX-14}" y2="${cy}" style="stroke:${color};stroke-width:2;${dash}"/>`;
+    svg += breakerSymbolSVG(breakerCX, cy, color, false);
+    svg += `<line x1="${afterBreakerX}" y1="${cy}" x2="${labelX-6}" y2="${cy}" style="stroke:${color};stroke-width:2;${dash}"/>`;
+
+    const items = c.items.map(x=>x.tag).filter((v,ix,a)=>a.indexOf(v)===ix).join(', ');
+    const lugares = c.items.map(x=>x.lugar).filter(Boolean).filter((v,ix,a)=>a.indexOf(v)===ix).join(', ');
+    const resp = c.items.some(x=>x.respaldado===false) ? ' · sin respaldo' : '';
+
+    svg += `<text x="${labelX}" y="${cy-16}" style="font:600 12px 'IBM Plex Mono',monospace;fill:var(--ink)">C${c.n} · ${esc(c.tipo)}${c.dedicado?' · dedicado':''}${resp}${c.avisos.length?' ⚠':''}</text>`;
+    svg += `<text x="${labelX}" y="${cy}" style="font:11px 'IBM Plex Mono',monospace;fill:var(--ink-soft)">${fmt(c.breaker,0)} A · ${esc(c.conductor.label)} · ${fmt(c.iDiseno,1)} A (${fmt(c.pctUso,0)}%)</text>`;
+    svg += `<text x="${labelX}" y="${cy+16}" style="font:10px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">${esc(truncar(items + (lugares?(' — '+lugares):''), 70))}</text>`;
+  });
+
+  if(hasUps){
+    const cy = rowCenterY(n);
+    const upsKva = Number(state.proyecto.upsKva)||0;
+    const breakerCX = busX + 46;
+    const afterBreakerX = breakerCX + 18;
+    const labelX = afterBreakerX + 26;
+    svg += `<line x1="${busX}" y1="${cy}" x2="${breakerCX-16}" y2="${cy}" style="stroke:var(--accent);stroke-width:2.2"/>`;
+    svg += `<rect x="${breakerCX-16}" y="${cy-13}" width="32" height="26" rx="4" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.8"/>`;
+    svg += `<text x="${breakerCX}" y="${cy+3}" text-anchor="middle" style="font:700 9px 'IBM Plex Mono',monospace;fill:var(--accent)">UPS</text>`;
+    svg += `<line x1="${breakerCX+16}" y1="${cy}" x2="${labelX-6}" y2="${cy}" style="stroke:var(--accent);stroke-width:2.2"/>`;
+    svg += `<text x="${labelX}" y="${cy-8}" style="font:600 12px 'IBM Plex Mono',monospace;fill:var(--ink)">UPS · ${fmt(upsKva,1)} kVA</text>`;
+    svg += `<text x="${labelX}" y="${cy+10}" style="font:10px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">Alimenta: ${esc(truncar(state.proyecto.upsAlimenta||'—',60))}</text>`;
+  }
+
+  svg += '</svg>';
+  wrap.innerHTML = svg;
+}
+
+/* ---- Exportación a DXF (AutoCAD) del diagrama unilineal — misma geometría que el SVG ---- */
+
+const DXF_ACI = {accent2:5, accent:30, ink:7, 'ink-faint':8, good:3, warn:2, bad:1}; // Autocad Color Index aproximado por color semantico
+const DXF_LAYERS = ['0','RED','PROTECCIONES','TIERRA','RESPALDO','CIRCUITOS','CAJETIN'];
+function dxfSafe(s){
+  return String(s==null?'':s)
+    .replace(/·/g,'-').replace(/⚠/g,'!').replace(/Δ/g,'d').replace(/°/g,'deg').replace(/→/g,'->')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^\x20-\x7E]/g,'');
+}
+
+// Fabrica de un "escritor" DXF: entidades con capa+color, simbolo de breaker,
+// y un cajetin (rotulo) con los datos del proyecto; la comparten el diagrama
+// unilineal y el plano del tablero, para no duplicar la logica dos veces.
+function makeDxfWriter(height){
+  const out = [];
+  const P = (code,val)=>{ out.push(String(code)); out.push(String(val)); };
+  const fy = y => (height - y).toFixed(2); // CAD crece hacia arriba; nuestro layout hacia abajo
+
+  function ln(x1,y1,x2,y2,colorKey,layer){
+    P(0,'LINE'); P(8, layer||'0'); P(62, DXF_ACI[colorKey]||7);
+    P(10,x1.toFixed(2)); P(20,fy(y1)); P(30,0);
+    P(11,x2.toFixed(2)); P(21,fy(y2)); P(31,0);
+  }
+  function circ(cx,cy,rad,colorKey,layer){
+    P(0,'CIRCLE'); P(8, layer||'0'); P(62, DXF_ACI[colorKey]||7);
+    P(10,cx.toFixed(2)); P(20,fy(cy)); P(30,0);
+    P(40,rad.toFixed(2));
+  }
+  function rectLines(x,y,w,h,colorKey,layer){
+    ln(x,y,x+w,y,colorKey,layer); ln(x+w,y,x+w,y+h,colorKey,layer);
+    ln(x+w,y+h,x,y+h,colorKey,layer); ln(x,y+h,x,y,colorKey,layer);
+  }
+  function brk(cx,cy,big,colorKey,layer){
+    const w=big?30:24, h=big?24:18, x=cx-w/2, y=cy-h/2;
+    rectLines(x,y,w,h,colorKey,layer);
+    ln(x+4,y+h-3,x+w-4,y+3,colorKey,layer);
+  }
+  function txt(x,y,str,size,colorKey,anchor,layer){
+    const safe = dxfSafe(str); if(!safe) return;
+    const h = Math.max((size||11)*0.8,3.5);
+    const just = anchor==='middle'?1:(anchor==='end'?2:0);
+    P(0,'TEXT'); P(8, layer||'0'); P(62, DXF_ACI[colorKey]||7);
+    P(10,x.toFixed(2)); P(20,fy(y)); P(30,0);
+    P(40,h.toFixed(2));
+    P(1,safe);
+    P(72,just); P(73,0);
+    P(11,x.toFixed(2)); P(21,fy(y));
+  }
+  function cajetin(x0, yTop, w, lamina){
+    const rows = [
+      ['PROYECTO', state.proyecto.nombre||'-'],
+      ['CLIENTE', state.proyecto.cliente||'-'],
+      ['UBICACION', state.proyecto.ubicacion||'-'],
+      ['FECHA', state.proyecto.fecha||'-'],
+      ['RESPONSABLE', state.proyecto.responsable||'-'],
+      ['REF. PROYECTO', state.proyecto.ref||'-']
+    ];
+    const lineH = 15, h = 24 + 26 + rows.length*lineH + 10;
+    rectLines(x0,yTop,w,h,'ink','CAJETIN');
+    ln(x0,yTop+24,x0+w,yTop+24,'ink','CAJETIN');
+    txt(x0+w/2, yTop+16, lamina, 13, 'ink', 'middle', 'CAJETIN');
+    txt(x0+w/2, yTop+38, 'Referencia RIC N18 (SEC Chile) - validar con instalador electrico autorizado', 8, 'ink-faint', 'middle', 'CAJETIN');
+    let y = yTop+24+26+12;
+    rows.forEach(([k,v])=>{ txt(x0+8, y, k+': '+v, 9, 'ink', 'start', 'CAJETIN'); y += lineH; });
+    return h;
+  }
+  function finish(){
+    P(0,'ENDSEC'); P(0,'EOF');
+    const tablas = ['0','SECTION','2','HEADER','9','$INSUNITS','70','0','0','ENDSEC',
+      '0','SECTION','2','TABLES',
+      '0','TABLE','2','LTYPE','70','1',
+        '0','LTYPE','2','CONTINUOUS','70','0','3','Solid line','72','65','73','0','40','0.0',
+      '0','ENDTAB',
+      '0','TABLE','2','LAYER','70',String(DXF_LAYERS.length),
+      ...DXF_LAYERS.flatMap(name=>['0','LAYER','2',name,'70','0','62','7','6','CONTINUOUS']),
+      '0','ENDTAB',
+      '0','ENDSEC',
+      '0','SECTION','2','BLOCKS','0','ENDSEC'
+    ];
+    return tablas.join('\n') + '\n' + out.join('\n') + '\n';
+  }
+  P(0,'SECTION'); P(2,'ENTITIES');
+  return {ln, circ, brk, txt, cajetin, finish};
+}
+function diagramaToDXF(){
+  const r = calcularTodo();
+  const n = r.circuitos.length;
+  const hasGen = !!state.proyecto.genHabilitado;
+  const hasUps = !!state.proyecto.upsHabilitado;
+  const totalRows = n + (hasUps?1:0);
+
+  const busX = 150;
+  const meterCY = 40;
+  let _cy = meterCY;
+  const atsCY = hasGen ? (_cy += 46) : null;
+  const difCY = (_cy += 40);
+  const mainCY = (_cy += 44);
+  const genCX = busX + 118;
+  const rowH = 78;
+  const busTopY = mainCY + 44;
+  const rowCenterY = i => busTopY + i*rowH + rowH/2;
+  const busBottomY = totalRows>0 ? rowCenterY(totalRows-1) : busTopY + 30;
+  const height = Math.max(busBottomY, mainCY+40) + 40;
+
+  const W = makeDxfWriter(height);
+  const {ln, circ, brk, txt} = W;
+
+  txt(busX,2,'RED PUBLICA',10,'ink','middle','RED');
+  ln(busX,2,busX,busBottomY,'accent2','RED');
+  circ(busX,meterCY,12,'accent2','RED');
+  txt(busX,meterCY+4,'M',11,'accent2','middle','RED');
+  txt(busX+24,meterCY+4,'Medidor / empalme',10,'ink','start','RED');
+
+  if(hasGen){
+    const genKva = Number(state.proyecto.genKva)||0;
+    const pctGen = genKva>0 ? (r.respaldoVA/1000)/genKva*100 : 0;
+    const genColor = pctGen>100 ? 'bad' : (pctGen>85 ? 'warn' : 'accent');
+    ln(genCX,atsCY,busX+22,atsCY,'accent','RESPALDO');
+    circ(genCX,atsCY,15,'accent','RESPALDO');
+    txt(genCX,atsCY+4,'G',12,'accent','middle','RESPALDO');
+    txt(genCX+22,atsCY-4,`GENERADOR DIESEL - ${fmt(genKva,1)} kVA - ${state.proyecto.genFases===3?'3F':'1F'}`,11,'ink','start','RESPALDO');
+    txt(genCX+22,atsCY+11,`Respalda ${fmt(r.respaldoW/1000,2)} kW de ${fmt(r.totalPW/1000,2)} kW (${fmt(pctGen,0)}%)${pctGen>100?' - excede el generador':''}`,10,genColor,'start','RESPALDO');
+    if(r.excluidoW>0) txt(genCX+22,atsCY+25,`Fuera del respaldo: ${fmt(r.excluidoW,0)} W (marcado sin respaldo en Cargas)`,9,'ink','start','RESPALDO');
+    ln(busX-22,atsCY-13,busX+22,atsCY-13,'accent2','RED'); ln(busX+22,atsCY-13,busX+22,atsCY+13,'accent2','RED');
+    ln(busX+22,atsCY+13,busX-22,atsCY+13,'accent2','RED'); ln(busX-22,atsCY+13,busX-22,atsCY-13,'accent2','RED');
+    txt(busX,atsCY+4,'ATS',10,'accent2','middle','RED');
+    txt(busX-26,atsCY-18,'Transferencia automatica',9,'ink','end','RED');
+  }
+
+  brk(busX,difCY,true,'accent2','PROTECCIONES');
+  txt(busX+24,difCY-2,'PROTECCION DIFERENCIAL GENERAL',11,'ink','start','PROTECCIONES');
+  txt(busX+24,difCY+13,'30 mA - verificar sensibilidad/selectividad segun diseno',10,'ink','start','PROTECCIONES');
+
+  brk(busX,mainCY,true,'accent2','PROTECCIONES');
+  txt(busX+24,mainCY-2,`TG ${state.proyecto.tableroNombre||'TD-1'} - INTERRUPTOR GENERAL ${fmt(r.dimAlim.breaker,0)} A - ${r.dimAlim.conductor.label}`,12,'ink','start','PROTECCIONES');
+  txt(busX+24,mainCY+14,`${r.alimFases===3?'Trifasico':'Monofasico'} - ${fmt(r.iTotal,1)} A${r.dimAlim.cdt!=null?(' - dV '+fmt(r.dimAlim.cdt,2)+'%'):''}`,10,'ink','start','PROTECCIONES');
+
+  ln(busX,mainCY,busX-42,mainCY,'good','TIERRA');
+  ln(busX-42,mainCY,busX-42,mainCY+14,'good','TIERRA');
+  ln(busX-50,mainCY+14,busX-34,mainCY+14,'good','TIERRA');
+  ln(busX-47,mainCY+18,busX-37,mainCY+18,'good','TIERRA');
+  ln(busX-44,mainCY+22,busX-40,mainCY+22,'good','TIERRA');
+  txt(busX-42,mainCY+36,'PAT',9,'good','middle','TIERRA');
+
+  if(n===0) txt(busX+24,busTopY+20,'Sin circuitos generados',12,'ink','start','CIRCUITOS');
+
+  r.circuitos.forEach((c,i)=>{
+    const cy = rowCenterY(i);
+    const color = c.avisos.length?'bad':(c.pctUso>90?'warn':'accent2');
+    const breakerCX = busX + 46;
+    const afterBreakerX = breakerCX + 18;
+    const labelX = afterBreakerX + 26;
+
+    ln(busX,cy,breakerCX-14,cy,color,'CIRCUITOS');
+    brk(breakerCX,cy,false,color,'CIRCUITOS');
+    ln(afterBreakerX,cy,labelX-6,cy,color,'CIRCUITOS');
+
+    const items = c.items.map(x=>x.tag).filter((v,ix,a)=>a.indexOf(v)===ix).join(', ');
+    const lugares = c.items.map(x=>x.lugar).filter(Boolean).filter((v,ix,a)=>a.indexOf(v)===ix).join(', ');
+    const resp = c.items.some(x=>x.respaldado===false) ? ' - sin respaldo' : '';
+
+    txt(labelX,cy-16,`C${c.n} - ${c.tipo}${c.dedicado?' - dedicado':''}${resp}${c.avisos.length?' !':''}`,12,'ink','start','CIRCUITOS');
+    txt(labelX,cy,`${fmt(c.breaker,0)} A - ${c.conductor.label} - ${fmt(c.iDiseno,1)} A (${fmt(c.pctUso,0)}%)`,11,'ink','start','CIRCUITOS');
+    txt(labelX,cy+16,truncar(items + (lugares?(' - '+lugares):''), 70),10,'ink','start','CIRCUITOS');
+  });
+
+  if(hasUps){
+    const cy = rowCenterY(n);
+    const upsKva = Number(state.proyecto.upsKva)||0;
+    const breakerCX = busX + 46;
+    const afterBreakerX = breakerCX + 18;
+    const labelX = afterBreakerX + 26;
+    ln(busX,cy,breakerCX-16,cy,'accent','RESPALDO');
+    ln(breakerCX-16,cy-13,breakerCX+16,cy-13,'accent','RESPALDO'); ln(breakerCX+16,cy-13,breakerCX+16,cy+13,'accent','RESPALDO');
+    ln(breakerCX+16,cy+13,breakerCX-16,cy+13,'accent','RESPALDO'); ln(breakerCX-16,cy+13,breakerCX-16,cy-13,'accent','RESPALDO');
+    txt(breakerCX,cy+3,'UPS',9,'accent','middle','RESPALDO');
+    ln(breakerCX+16,cy,labelX-6,cy,'accent','RESPALDO');
+    txt(labelX,cy-8,`UPS - ${fmt(upsKva,1)} kVA`,12,'ink','start','RESPALDO');
+    txt(labelX,cy+10,`Alimenta: ${truncar(state.proyecto.upsAlimenta||'-',60)}`,10,'ink','start','RESPALDO');
+  }
+
+  W.cajetin(busX-150, height+30, 420, 'DIAGRAMA UNILINEAL');
+
+  return W.finish();
+}
+
+function polosAuto(nCircuitos){
+  let n = Math.max(nCircuitos, 6);
+  if(n%2) n++;
+  return n;
+}
+
+// Lógica única de asignación de polos — la comparten el dibujo del tablero y
+// el directorio de circuitos, para que nunca queden desincronizados.
+function tableroLayout(){
+  const r = calcularTodo();
+  const n = r.circuitos.length;
+  const auto = polosAuto(n);
+  const userPolos = state.proyecto.tableroPolos;
+  const polos = (userPolos!=null && userPolos>=2) ? userPolos : auto;
+  const insuficiente = polos < n;
+  const total = Math.max(polos, n);
+  const byN = {};
+  r.circuitos.forEach(c=> byN[c.n] = c);
+  const left = [], right = [];
+  for(let s=1; s<=total; s++){ (s%2===1 ? left : right).push(s); }
+  function fase(slot){ return r.alimFases===3 ? ['L1','L2','L3'][(slot-1)%3] : 'L1'; }
+
+  // Qué circuito real alimenta al UPS: el que el usuario eligió si sigue existiendo,
+  // sino el primer circuito de tipo "Respaldo/UPS", sino el primer circuito respaldado.
+  let upsSlot = null;
+  if(r.circuitos.length){
+    const elegido = r.circuitos.find(c=>c.n===state.proyecto.upsCircuito);
+    const porTipo = r.circuitos.find(c=>c.tipo==='Respaldo/UPS');
+    const porRespaldo = r.circuitos.find(c=>c.items.some(x=>x.respaldado!==false));
+    const resuelto = elegido || porTipo || porRespaldo || r.circuitos[0];
+    upsSlot = resuelto.n;
+    state.proyecto.upsCircuito = upsSlot; // persiste la elección resuelta
+  }
+
+  return {r, n, polos, total, insuficiente, byN, left, right, fase, upsSlot};
+}
+
+function renderUpsCircuitoSelect(L){
+  const sel = document.getElementById('p-ups-circuito');
+  if(!sel) return;
+  if(!L.r.circuitos.length){ sel.innerHTML = '<option value="">— sin circuitos —</option>'; return; }
+  sel.innerHTML = L.r.circuitos.map(c=>{
+    const desc = truncar(c.items.map(x=>x.tag).join(', '), 28);
+    return `<option value="${c.n}" ${c.n===L.upsSlot?'selected':''}>C${c.n} · ${esc(c.tipo)} — ${esc(desc)}</option>`;
+  }).join('');
+}
+
+function renderTablero(){
+  const wrap = document.getElementById('tablero-wrap');
+  const avisoBox = document.getElementById('tablero-aviso');
+  if(!wrap) return;
+  const L = tableroLayout();
+
+  if(avisoBox){
+    avisoBox.innerHTML = L.insuficiente
+      ? `<p class="disclaimer" style="border-color:var(--bad); color:var(--bad); margin-bottom:12px;"><b>⚠ Tablero insuficiente:</b> se generaron ${L.n} circuitos y el tablero tiene ${L.polos} polos definidos. Aumente el N° de polos en «Proyecto» o revise el cuadro de circuitos.</p>`
+      : '';
+  }
+
+  function slotHTML(slot){
+    const c = L.byN[slot];
+    if(!c){
+      return `<div class="slot reserve"><div class="slot-num">${slot}</div><div class="slot-body"><span class="slot-desc">Reserva</span></div></div>`;
+    }
+    const estado = c.avisos.length ? 'bad' : (c.pctUso>90 ? 'warn' : '');
+    const items = c.items.map(x=>x.tag).filter((v,ix,a)=>a.indexOf(v)===ix).join(', ');
+    const f = L.r.alimFases===3 ? L.fase(slot) : null;
+    return `<div class="slot ${estado}">
+      <div class="slot-num">${slot}</div>
+      <div class="slot-body">
+        <div class="slot-top">
+          <span class="slot-breaker">${fmt(c.breaker,0)} A</span>
+          ${f?`<span class="slot-phase">${f}</span>`:''}
+          <span class="slot-phase">${esc(c.conductor.label)}</span>
+        </div>
+        <div class="slot-desc">${esc(c.tipo)}${c.dedicado?' · dedicado':''} — ${esc(truncar(items,40))}</div>
+      </div>
+    </div>`;
+  }
+
+  wrap.innerHTML = `<div class="panelboard">
+    <div class="panelboard-head">${esc(state.proyecto.tableroNombre||'TD-1')}${state.proyecto.nombre?(' · '+esc(state.proyecto.nombre)):''}</div>
+    <div class="panelboard-main">PRINCIPAL ${fmt(L.r.dimAlim.breaker,0)} A · ${esc(L.r.dimAlim.conductor.label)} · ${L.r.alimFases===3?'Trifásico':'Monofásico'} · ${L.total} polos</div>
+    <div class="panelboard-cols">
+      <div class="panelboard-col">${L.left.map(slotHTML).join('')}</div>
+      <div class="panelboard-col">${L.right.map(slotHTML).join('')}</div>
+    </div>
+  </div>`;
+}
+
+/* ---- Dibujo "realista" del gabinete (SVG), basado en el mismo tableroLayout ---- */
+
+const FASE_COLOR = {L1:'var(--accent2)', L2:'var(--phase2)', L3:'var(--phase3)'};
+
+function toggleColor(c){
+  if(!c) return 'var(--line)';
+  if(c.avisos.length) return 'var(--bad)';
+  if(c.pctUso>90) return 'var(--warn)';
+  return 'var(--ink-soft)';
+}
+
+function renderTableroDibujo(){
+  const wrap = document.getElementById('tablero-dibujo-wrap');
+  if(!wrap) return;
+  const L = tableroLayout();
+  const rows = Math.max(L.left.length, L.right.length, 1);
+  const hasGen = !!state.proyecto.genHabilitado;
+  const hasUps = !!state.proyecto.upsHabilitado;
+
+  const bw=48, bh=66, gapV=14, channelW=80, padSide=36, padTop=210, padBottom=34;
+  const panelW = padSide*2 + bw*2 + channelW;
+  const topOffset = hasGen ? 74 : 0; // espacio arriba del gabinete para generador + ATS
+  const sideW = hasUps ? 210 : 0;    // columna lateral para el UPS externo
+  const width = panelW + sideW;
+  const rowsTopY = topOffset + padTop;
+  const panelH = padTop + rows*(bh+gapV) - gapV + padBottom;
+  const height = Math.max(topOffset + panelH, hasUps ? topOffset+160 : 0);
+  const leftColX = padSide;
+  const rightColX = padSide + bw + channelW;
+  const channelCX = leftColX + bw + channelW/2;
+  const difCY = topOffset + 70;
+  const mainW=88, mainH=52;
+  const mainX = panelW/2 - mainW/2, mainY = topOffset + 104;
+  const rowY = k => rowsTopY + k*(bh+gapV);
+  const risers = L.r.alimFases===3 ? ['L1','L2','L3'] : ['L1'];
+  const riserX = risers.map((_,i)=> channelCX - (risers.length-1)*5/2 + i*5);
+  const riserTopY = mainY+mainH+16;
+  const riserBottomY = rowY(rows-1) + bh/2;
+  const atsCY = topOffset*0.42;
+  const posBySlot = {}; // {cy, side} de cada polo, para trazar cables reales (UPS, bypass) hasta el breaker exacto
+
+  function breakerSVG(x, cy, c, slot){
+    const y = cy - bh/2;
+    const color = toggleColor(c);
+    let s = `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="5" style="fill:var(--surface);stroke:${c?'var(--ink-faint)':'var(--line)'};stroke-width:1.3;${c?'':'stroke-dasharray:3,3;'}"/>`;
+    if(c){
+      const f = L.r.alimFases===3 ? L.fase(slot) : 'L1';
+      s += `<rect x="${x+bw/2-7}" y="${y+6}" width="14" height="19" rx="2" style="fill:${color}"/>`;
+      s += `<text x="${x+bw/2}" y="${y+bh-24}" text-anchor="middle" style="font:700 11px 'IBM Plex Mono',monospace;fill:var(--ink)">${fmt(c.breaker,0)}A</text>`;
+      s += `<text x="${x+bw/2}" y="${y+bh-11}" text-anchor="middle" style="font:600 9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">C${c.n}${c.avisos.length?' ⚠':''}</text>`;
+      s += `<rect x="${x+2}" y="${y+2}" width="8" height="5" rx="1" style="fill:${FASE_COLOR[f]||'var(--accent2)'}"/>`;
+    } else {
+      s += `<text x="${x+bw/2}" y="${y+bh/2+3}" text-anchor="middle" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">libre</text>`;
+    }
+    return s;
+  }
+
+  let svg = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
+  // Gabinete: bezel + chapa interior + tornillos de montaje
+  svg += `<rect x="0" y="${topOffset}" width="${panelW}" height="${panelH}" rx="16" style="fill:var(--surface-3);stroke:var(--ink-soft);stroke-width:2"/>`;
+  svg += `<rect x="6" y="${topOffset+6}" width="${panelW-12}" height="${panelH-12}" rx="12" style="fill:var(--surface-2);stroke:var(--line);stroke-width:1"/>`;
+  [[16,topOffset+16],[panelW-16,topOffset+16],[16,topOffset+panelH-16],[panelW-16,topOffset+panelH-16]].forEach(([cx,cyS])=>{
+    svg += `<circle cx="${cx}" cy="${cyS}" r="5" style="fill:var(--surface);stroke:var(--ink-faint);stroke-width:1.2"/>`;
+    svg += `<line x1="${cx-3}" y1="${cyS}" x2="${cx+3}" y2="${cyS}" style="stroke:var(--ink-faint);stroke-width:1"/>`;
+  });
+  // Rótulo
+  svg += `<rect x="20" y="${topOffset+16}" width="${panelW-40}" height="30" rx="5" style="fill:var(--accent2)"/>`;
+  svg += `<text x="${panelW/2}" y="${topOffset+36}" text-anchor="middle" style="font:700 12px 'IBM Plex Mono',monospace;fill:var(--surface);letter-spacing:.04em">TG ${esc((state.proyecto.tableroNombre||'TD-1').toUpperCase())} · ${L.total} POLOS · ${L.r.alimFases===3?'3F':'1F'}</text>`;
+
+  // Red / generador + ATS, arriba del gabinete
+  if(hasGen){
+    const genKva = Number(state.proyecto.genKva)||0;
+    const genCX = panelW/2 + 92;
+    svg += `<text x="${panelW/2}" y="10" text-anchor="middle" style="font:600 9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">RED</text>`;
+    svg += `<line x1="${panelW/2}" y1="14" x2="${panelW/2}" y2="${mainY}" style="stroke:var(--ink-soft);stroke-width:2"/>`;
+    svg += `<rect x="${panelW/2-20}" y="${atsCY-12}" width="40" height="24" rx="4" style="fill:var(--surface);stroke:var(--accent2);stroke-width:1.8"/>`;
+    svg += `<text x="${panelW/2}" y="${atsCY+4}" text-anchor="middle" style="font:700 10px 'IBM Plex Mono',monospace;fill:var(--accent2)">ATS</text>`;
+    svg += `<line x1="${panelW/2+20}" y1="${atsCY}" x2="${genCX-14}" y2="${atsCY}" style="stroke:var(--accent);stroke-width:2"/>`;
+    svg += `<circle cx="${genCX}" cy="${atsCY}" r="13" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.8"/>`;
+    svg += `<text x="${genCX}" y="${atsCY+4}" text-anchor="middle" style="font:700 11px 'IBM Plex Mono',monospace;fill:var(--accent)">G</text>`;
+    svg += `<text x="${genCX+18}" y="${atsCY+4}" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">${fmt(genKva,1)}kVA ${state.proyecto.genFases===3?'3F':'1F'}</text>`;
+  } else {
+    svg += `<line x1="${panelW/2}" y1="14" x2="${panelW/2}" y2="${mainY}" style="stroke:var(--ink-soft);stroke-width:2"/>`;
+  }
+
+  // Protección diferencial general (RIC N°18)
+  svg += `<rect x="${panelW/2-20}" y="${difCY-12}" width="40" height="24" rx="4" style="fill:var(--surface);stroke:var(--accent2);stroke-width:1.8"/>`;
+  svg += `<line x1="${panelW/2-16}" y1="${difCY+9}" x2="${panelW/2+16}" y2="${difCY-9}" style="stroke:var(--accent2);stroke-width:1.8"/>`;
+  svg += `<text x="${panelW/2+24}" y="${difCY+4}" style="font:600 9px 'IBM Plex Mono',monospace;fill:var(--ink)">DIF. GENERAL 30 mA</text>`;
+
+  // Interruptor general del tablero general (TG)
+  svg += `<rect x="${mainX}" y="${mainY}" width="${mainW}" height="${mainH}" rx="5" style="fill:var(--surface);stroke:var(--accent2);stroke-width:2"/>`;
+  svg += `<rect x="${panelW/2-9}" y="${mainY+7}" width="18" height="22" rx="2" style="fill:var(--accent2)"/>`;
+  svg += `<text x="${panelW/2}" y="${mainY+mainH-7}" text-anchor="middle" style="font:700 11px 'IBM Plex Mono',monospace;fill:var(--ink)">TG ${fmt(L.r.dimAlim.breaker,0)}A</text>`;
+
+  // Puesta a tierra de protección (PAT)
+  const patX = mainX - 26;
+  svg += `<line x1="${mainX}" y1="${mainY+mainH/2}" x2="${patX}" y2="${mainY+mainH/2}" style="stroke:var(--good);stroke-width:1.6"/>`;
+  svg += `<line x1="${patX-5}" y1="${mainY+mainH/2+4}" x2="${patX+5}" y2="${mainY+mainH/2+4}" style="stroke:var(--good);stroke-width:1.6"/>`;
+  svg += `<line x1="${patX-3}" y1="${mainY+mainH/2+7}" x2="${patX+3}" y2="${mainY+mainH/2+7}" style="stroke:var(--good);stroke-width:1.6"/>`;
+  svg += `<line x1="${patX-1.5}" y1="${mainY+mainH/2+10}" x2="${patX+1.5}" y2="${mainY+mainH/2+10}" style="stroke:var(--good);stroke-width:1.6"/>`;
+  svg += `<text x="${patX}" y="${mainY+mainH/2+22}" text-anchor="middle" style="font:700 8px 'IBM Plex Mono',monospace;fill:var(--good)">PAT</text>`;
+  // Barras / peine de fases
+  riserX.forEach((rx,i)=>{
+    svg += `<line x1="${rx}" y1="${riserTopY}" x2="${rx}" y2="${riserBottomY}" style="stroke:${FASE_COLOR[risers[i]]||'var(--accent2)'};stroke-width:2.2"/>`;
+  });
+  svg += `<text x="${channelCX}" y="${riserTopY-6}" text-anchor="middle" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">${risers.join('·')}</text>`;
+
+  for(let k=0;k<rows;k++){
+    const cy = rowY(k) + bh/2;
+    const slotL = L.left[k], slotR = L.right[k];
+    if(slotL!=null){
+      svg += breakerSVG(leftColX, cy, L.byN[slotL]||null, slotL);
+      posBySlot[slotL] = {cy, side:'left'};
+      if(L.byN[slotL]){ const f=L.r.alimFases===3?L.fase(slotL):'L1'; svg += `<line x1="${leftColX+bw}" y1="${cy}" x2="${riserX[risers.indexOf(f)]}" y2="${cy}" style="stroke:${FASE_COLOR[f]};stroke-width:1.4"/>`; }
+    }
+    if(slotR!=null){
+      svg += breakerSVG(rightColX, cy, L.byN[slotR]||null, slotR);
+      posBySlot[slotR] = {cy, side:'right'};
+      if(L.byN[slotR]){ const f=L.r.alimFases===3?L.fase(slotR):'L1'; svg += `<line x1="${rightColX}" y1="${cy}" x2="${riserX[risers.indexOf(f)]}" y2="${cy}" style="stroke:${FASE_COLOR[f]};stroke-width:1.4"/>`; }
+    }
+  }
+
+  // Cargas sin respaldo (ej. A/A): se alimentan directo de la red, sin pasar por el ATS.
+  if(hasGen){
+    const tapY = (14 + (atsCY-12)) / 2; // punto medio entre el inicio de la línea RED y el borde superior del ATS
+    const unbacked = [];
+    for(let s=1; s<=L.total; s++){ const c=L.byN[s]; if(c && c.items.some(x=>x.respaldado===false)) unbacked.push(s); }
+    unbacked.forEach(slot=>{
+      const pos = posBySlot[slot]; if(!pos) return;
+      const marginX = pos.side==='left' ? 10 : panelW-10;
+      const edgeX = pos.side==='left' ? leftColX : rightColX+bw;
+      svg += `<line x1="${panelW/2}" y1="${tapY}" x2="${marginX}" y2="${tapY}" style="stroke:var(--ink-faint);stroke-width:1.6;stroke-dasharray:4,3"/>`;
+      svg += `<line x1="${marginX}" y1="${tapY}" x2="${marginX}" y2="${pos.cy}" style="stroke:var(--ink-faint);stroke-width:1.6;stroke-dasharray:4,3"/>`;
+      svg += `<line x1="${marginX}" y1="${pos.cy}" x2="${edgeX}" y2="${pos.cy}" style="stroke:var(--ink-faint);stroke-width:1.6;stroke-dasharray:4,3"/>`;
+    });
+    if(unbacked.length){
+      svg += `<circle cx="${panelW/2}" cy="${tapY}" r="2.5" style="fill:var(--ink-faint)"/>`;
+      svg += `<text x="${panelW/2+6}" y="${tapY-4}" style="font:8px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">directo de red (sin respaldo)</text>`;
+    }
+  }
+
+  // UPS: conectado desde el circuito real que lo alimenta (elegido en «Proyecto»)
+  if(hasUps){
+    const upsKva = Number(state.proyecto.upsKva)||0;
+    const feedPos = L.upsSlot!=null ? posBySlot[L.upsSlot] : null;
+    const upsCY = feedPos ? feedPos.cy : topOffset + panelH*0.55;
+    const upsX = panelW + 36;
+    if(feedPos){
+      const edgeX = feedPos.side==='left' ? leftColX : rightColX+bw;
+      svg += `<line x1="${edgeX}" y1="${upsCY}" x2="${panelW-4}" y2="${upsCY}" style="stroke:var(--accent);stroke-width:1.8;stroke-dasharray:5,3"/>`;
+      svg += `<circle cx="${edgeX}" cy="${upsCY}" r="2.5" style="fill:var(--accent)"/>`;
+      svg += `<text x="${panelW-6}" y="${upsCY-6}" text-anchor="end" style="font:8px 'IBM Plex Mono',monospace;fill:var(--accent)">C${L.upsSlot} → UPS</text>`;
+    } else {
+      svg += `<text x="${panelW-6}" y="${upsCY-6}" text-anchor="end" style="font:8px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">circuito dedicado</text>`;
+    }
+    svg += `<line x1="${panelW-4}" y1="${upsCY}" x2="${upsX-2}" y2="${upsCY}" style="stroke:var(--accent);stroke-width:2"/>`;
+    svg += `<rect x="${upsX}" y="${upsCY-32}" width="64" height="64" rx="6" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.8"/>`;
+    svg += `<rect x="${upsX+16}" y="${upsCY-18}" width="12" height="20" rx="1.5" style="fill:var(--accent);opacity:.85"/>`;
+    svg += `<rect x="${upsX+32}" y="${upsCY-10}" width="12" height="12" rx="1.5" style="fill:var(--accent);opacity:.5"/>`;
+    svg += `<text x="${upsX+32}" y="${upsCY+22}" text-anchor="middle" style="font:700 10px 'IBM Plex Mono',monospace;fill:var(--accent)">UPS</text>`;
+    svg += `<text x="${upsX+32}" y="${upsCY+38}" text-anchor="middle" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-faint)">${fmt(upsKva,1)} kVA</text>`;
+    svg += `<line x1="${upsX+64}" y1="${upsCY}" x2="${upsX+96}" y2="${upsCY}" style="stroke:var(--accent);stroke-width:1.6"/>`;
+    svg += `<polygon points="${upsX+96},${upsCY-4} ${upsX+96},${upsCY+4} ${upsX+102},${upsCY}" style="fill:var(--accent)"/>`;
+    svg += `<text x="${upsX}" y="${upsCY+54}" style="font:9px 'IBM Plex Mono',monospace;fill:var(--ink-soft)">${esc(truncar(state.proyecto.upsAlimenta||'Cargas críticas',26))}</text>`;
+  }
+
+  svg += '</svg>';
+  wrap.innerHTML = svg;
+}
+
+/* ---- Exportación a DXF del plano del tablero — misma geometría que el dibujo ---- */
+
+function tableroToDXF(){
+  const L = tableroLayout();
+  const rows = Math.max(L.left.length, L.right.length, 1);
+  const hasGen = !!state.proyecto.genHabilitado;
+  const hasUps = !!state.proyecto.upsHabilitado;
+
+  const bw=48, bh=66, gapV=14, channelW=80, padSide=36, padTop=210, padBottom=34;
+  const panelW = padSide*2 + bw*2 + channelW;
+  const topOffset = hasGen ? 74 : 0;
+  const sideW = hasUps ? 210 : 0;
+  const width = panelW + sideW;
+  const rowsTopY = topOffset + padTop;
+  const panelH = padTop + rows*(bh+gapV) - gapV + padBottom;
+  const height = Math.max(topOffset + panelH, hasUps ? topOffset+160 : 0);
+  const leftColX = padSide;
+  const rightColX = padSide + bw + channelW;
+  const channelCX = leftColX + bw + channelW/2;
+  const difCY = topOffset + 70;
+  const mainW=88, mainH=52;
+  const mainX = panelW/2 - mainW/2, mainY = topOffset + 104;
+  const rowY = k => rowsTopY + k*(bh+gapV);
+  const risers = L.r.alimFases===3 ? ['L1','L2','L3'] : ['L1'];
+  const riserX = risers.map((_,i)=> channelCX - (risers.length-1)*5/2 + i*5);
+  const riserTopY = mainY+mainH+16;
+  const riserBottomY = rowY(rows-1) + bh/2;
+  const atsCY = topOffset*0.42;
+  const posBySlot = {};
+
+  const totalH = height + 260; // deja espacio para el cajetín debajo
+  const W = makeDxfWriter(totalH);
+  const {ln, circ, brk, txt} = W;
+
+  function slotDxf(x, cy, c, slot){
+    const y = cy - bh/2;
+    const lineColor = c ? 'ink' : 'ink-faint';
+    ln(x,y,x+bw,y,lineColor,'CIRCUITOS'); ln(x+bw,y,x+bw,y+bh,lineColor,'CIRCUITOS');
+    ln(x+bw,y+bh,x,y+bh,lineColor,'CIRCUITOS'); ln(x,y+bh,x,y,lineColor,'CIRCUITOS');
+    if(c){
+      const f = L.r.alimFases===3 ? L.fase(slot) : 'L1';
+      const toggle = c.avisos.length?'bad':(c.pctUso>90?'warn':'ink');
+      ln(x+bw/2-7,y+6,x+bw/2+7,y+6,toggle,'CIRCUITOS'); ln(x+bw/2+7,y+6,x+bw/2+7,y+25,toggle,'CIRCUITOS');
+      ln(x+bw/2+7,y+25,x+bw/2-7,y+25,toggle,'CIRCUITOS'); ln(x+bw/2-7,y+25,x+bw/2-7,y+6,toggle,'CIRCUITOS');
+      txt(x+bw/2,y+bh-24,`${fmt(c.breaker,0)}A`,11,'ink','middle','CIRCUITOS');
+      txt(x+bw/2,y+bh-11,`C${c.n}${c.avisos.length?' !':''}`,9,'ink-faint','middle','CIRCUITOS');
+      txt(x+2,y+10,f,8,'accent2','start','CIRCUITOS');
+    } else {
+      txt(x+bw/2,y+bh/2+3,'libre',9,'ink-faint','middle','CIRCUITOS');
+    }
+  }
+
+  txt(panelW/2, topOffset+30, `TG ${(state.proyecto.tableroNombre||'TD-1').toUpperCase()} - ${L.total} POLOS - ${L.r.alimFases===3?'3F':'1F'}`, 12, 'ink', 'middle', 'PROTECCIONES');
+
+  if(hasGen){
+    const genKva = Number(state.proyecto.genKva)||0;
+    const genCX = panelW/2 + 92;
+    txt(panelW/2,8,'RED',9,'ink-faint','middle','RED');
+    ln(panelW/2,14,panelW/2,mainY,'ink-faint','RED');
+    ln(panelW/2-20,atsCY-12,panelW/2+20,atsCY-12,'accent2','RED'); ln(panelW/2+20,atsCY-12,panelW/2+20,atsCY+12,'accent2','RED');
+    ln(panelW/2+20,atsCY+12,panelW/2-20,atsCY+12,'accent2','RED'); ln(panelW/2-20,atsCY+12,panelW/2-20,atsCY-12,'accent2','RED');
+    txt(panelW/2,atsCY+4,'ATS',10,'accent2','middle','RED');
+    ln(panelW/2+20,atsCY,genCX-14,atsCY,'accent','RESPALDO');
+    circ(genCX,atsCY,13,'accent','RESPALDO');
+    txt(genCX,atsCY+4,'G',11,'accent','middle','RESPALDO');
+    txt(genCX+18,atsCY+4,`${fmt(genKva,1)}kVA ${state.proyecto.genFases===3?'3F':'1F'}`,9,'ink-faint','start','RESPALDO');
+  } else {
+    ln(panelW/2,14,panelW/2,mainY,'ink-faint','RED');
+  }
+
+  brk(panelW/2,difCY,true,'accent2','PROTECCIONES');
+  txt(panelW/2+24,difCY+4,'DIF. GENERAL 30 mA',9,'ink','start','PROTECCIONES');
+
+  ln(mainX,mainY,mainX+mainW,mainY,'accent2','PROTECCIONES'); ln(mainX+mainW,mainY,mainX+mainW,mainY+mainH,'accent2','PROTECCIONES');
+  ln(mainX+mainW,mainY+mainH,mainX,mainY+mainH,'accent2','PROTECCIONES'); ln(mainX,mainY+mainH,mainX,mainY,'accent2','PROTECCIONES');
+  txt(panelW/2,mainY+mainH-7,`TG ${fmt(L.r.dimAlim.breaker,0)}A`,11,'ink','middle','PROTECCIONES');
+
+  const patX = mainX - 26;
+  ln(mainX,mainY+mainH/2,patX,mainY+mainH/2,'good','TIERRA');
+  ln(patX-5,mainY+mainH/2+4,patX+5,mainY+mainH/2+4,'good','TIERRA');
+  ln(patX-3,mainY+mainH/2+7,patX+3,mainY+mainH/2+7,'good','TIERRA');
+  ln(patX-1.5,mainY+mainH/2+10,patX+1.5,mainY+mainH/2+10,'good','TIERRA');
+  txt(patX,mainY+mainH/2+22,'PAT',8,'good','middle','TIERRA');
+
+  riserX.forEach((rx,i)=> ln(rx,riserTopY,rx,riserBottomY,'accent2','PROTECCIONES'));
+  txt(channelCX,riserTopY-6,risers.join('-'),9,'ink-faint','middle','PROTECCIONES');
+
+  for(let k=0;k<rows;k++){
+    const cy = rowY(k) + bh/2;
+    const slotL = L.left[k], slotR = L.right[k];
+    if(slotL!=null){
+      slotDxf(leftColX, cy, L.byN[slotL]||null, slotL);
+      posBySlot[slotL] = {cy, side:'left'};
+      if(L.byN[slotL]){ const f=L.r.alimFases===3?L.fase(slotL):'L1'; ln(leftColX+bw,cy,riserX[risers.indexOf(f)],cy,'accent2','CIRCUITOS'); }
+    }
+    if(slotR!=null){
+      slotDxf(rightColX, cy, L.byN[slotR]||null, slotR);
+      posBySlot[slotR] = {cy, side:'right'};
+      if(L.byN[slotR]){ const f=L.r.alimFases===3?L.fase(slotR):'L1'; ln(rightColX,cy,riserX[risers.indexOf(f)],cy,'accent2','CIRCUITOS'); }
+    }
+  }
+
+  if(hasGen){
+    const tapY = (14 + (atsCY-12)) / 2;
+    const unbacked = [];
+    for(let s=1; s<=L.total; s++){ const c=L.byN[s]; if(c && c.items.some(x=>x.respaldado===false)) unbacked.push(s); }
+    unbacked.forEach(slot=>{
+      const pos = posBySlot[slot]; if(!pos) return;
+      const marginX = pos.side==='left' ? 10 : panelW-10;
+      const edgeX = pos.side==='left' ? leftColX : rightColX+bw;
+      ln(panelW/2,tapY,marginX,tapY,'ink-faint','RED');
+      ln(marginX,tapY,marginX,pos.cy,'ink-faint','RED');
+      ln(marginX,pos.cy,edgeX,pos.cy,'ink-faint','RED');
+    });
+    if(unbacked.length) txt(panelW/2+6,tapY-4,'directo de red (sin respaldo)',8,'ink-faint','start','RED');
+  }
+
+  if(hasUps){
+    const upsKva = Number(state.proyecto.upsKva)||0;
+    const feedPos = L.upsSlot!=null ? posBySlot[L.upsSlot] : null;
+    const upsCY = feedPos ? feedPos.cy : topOffset + panelH*0.55;
+    const upsX = panelW + 36;
+    if(feedPos){
+      const edgeX = feedPos.side==='left' ? leftColX : rightColX+bw;
+      ln(edgeX,upsCY,panelW-4,upsCY,'accent','RESPALDO');
+      txt(panelW-6,upsCY-6,`C${L.upsSlot} -> UPS`,8,'accent','end','RESPALDO');
+    } else {
+      txt(panelW-6,upsCY-6,'circuito dedicado',8,'ink-faint','end','RESPALDO');
+    }
+    ln(panelW-4,upsCY,upsX-2,upsCY,'accent','RESPALDO');
+    ln(upsX,upsCY-32,upsX+64,upsCY-32,'accent','RESPALDO'); ln(upsX+64,upsCY-32,upsX+64,upsCY+32,'accent','RESPALDO');
+    ln(upsX+64,upsCY+32,upsX,upsCY+32,'accent','RESPALDO'); ln(upsX,upsCY+32,upsX,upsCY-32,'accent','RESPALDO');
+    txt(upsX+32,upsCY+22,'UPS',10,'accent','middle','RESPALDO');
+    txt(upsX+32,upsCY+38,`${fmt(upsKva,1)} kVA`,9,'ink-faint','middle','RESPALDO');
+    txt(upsX,upsCY+54,`Alimenta: ${truncar(state.proyecto.upsAlimenta||'Cargas criticas',26)}`,9,'ink','start','RESPALDO');
+  }
+
+  W.cajetin(0, height+30, Math.min(width,420), 'TABLERO ELECTRICO - ' + (state.proyecto.tableroNombre||'TD-1'));
+
+  return W.finish();
+}
+
+function renderStats(){
+  const r = calcularTodo();
+  const el = document.getElementById('statstrip');
+  el.innerHTML = [
+    stat('Potencia instalada', fmt(r.totalPW/1000,2), 'kW'),
+    stat('Demanda estimada', fmt(r.totalDemW/1000,2), 'kW'),
+    stat('Corriente alimentador', fmt(r.iTotal,1), 'A'),
+    stat('Breaker principal', fmt(r.dimAlim.breaker,0), 'A'),
+    stat('Conductor alimentador', r.dimAlim.conductor.label, ''),
+    stat('Circuitos generados', fmt(r.circuitos.length,0), '')
+  ].join('');
+}
+function stat(lbl,val,unit){
+  return '<div class="stat"><div class="lbl">'+esc(lbl)+'</div><div class="val">'+esc(val)+(unit?' <small>'+esc(unit)+'</small>':'')+'</div></div>';
+}
+
+function renderTipos(){
+  const body = document.getElementById('tipos-body');
+  body.innerHTML = state.tipos.map((t,i)=>`
+    <tr>
+      <td><input data-ttipo="nombre" data-i="${i}" type="text" value="${esc(t.nombre)}"></td>
+      <td class="num"><input data-ttipo="fp" data-i="${i}" type="number" step="0.01" min="0.1" max="1" value="${t.fp}"></td>
+      <td class="num">
+        <select data-ttipo="fases" data-i="${i}"><option value="1" ${t.fases===1?'selected':''}>1</option><option value="3" ${t.fases===3?'selected':''}>3</option></select>
+      </td>
+      <td class="num"><input data-ttipo="fd" data-i="${i}" type="number" step="1" min="0" max="100" value="${t.fd}"></td>
+      <td class="num"><input data-ttipo="breaker" data-i="${i}" type="number" step="1" min="1" value="${t.breaker}"></td>
+      <td><button class="btn small danger" data-del-tipo="${i}" title="Eliminar tipo">✕</button></td>
+    </tr>`).join('');
+}
+
+function renderCargas(){
+  const body = document.getElementById('cargas-body');
+  const opcionesTipo = state.tipos.map(t=>`<option value="${esc(t.nombre)}">${esc(t.nombre)}</option>`).join('');
+  body.innerHTML = state.cargas.map(c=>{
+    const calc = calcCarga(c);
+    return `<tr data-row="${c.id}">
+      <td><select data-f="tipo">${opcionesTipo.replace('value="'+esc(c.tipo)+'"','value="'+esc(c.tipo)+'" selected')}</select></td>
+      <td><input data-f="tag" type="text" value="${esc(c.tag)}" placeholder="Equipo"></td>
+      <td><input data-f="lugar" type="text" value="${esc(c.lugar)}" placeholder="Lugar"></td>
+      <td><input data-f="caracteristicas" type="text" value="${esc(c.caracteristicas)}" placeholder="Características"></td>
+      <td class="num"><input data-f="cantidad" type="number" min="0" step="1" value="${c.cantidad}"></td>
+      <td class="num"><input data-f="potUnit" type="number" min="0" step="1" value="${c.potUnit}"></td>
+      <td class="num compact">${fmt(calc.potTotalW,0)}</td>
+      <td class="num"><input data-f="fp" type="number" min="0.1" max="1" step="0.01" value="${c.fp}"></td>
+      <td class="num"><select data-f="fases"><option value="1" ${c.fases===1?'selected':''}>1</option><option value="3" ${c.fases===3?'selected':''}>3</option></select></td>
+      <td style="text-align:center;"><input data-f="continua" type="checkbox" ${c.continua?'checked':''}></td>
+      <td style="text-align:center;"><input data-f="dedicado" type="checkbox" ${c.dedicado?'checked':''}></td>
+      <td style="text-align:center;"><input data-f="respaldado" type="checkbox" ${c.respaldado!==false?'checked':''}></td>
+      <td class="num"><input data-f="longitud" type="number" min="0" step="1" value="${c.longitud==null?'':c.longitud}" placeholder="—"></td>
+      <td class="num compact">${fmt(calc.corriente,2)}</td>
+      <td><button class="btn small danger" data-del-carga="${c.id}" title="Eliminar">✕</button></td>
+    </tr>`;
+  }).join('');
+  renderFooterCargas();
+
+  if(state.cargas.length===0){
+    document.getElementById('cargas-table').insertAdjacentHTML('afterend','<div class="empty" id="cargas-empty">Aún no hay cargas registradas.<br><button class="btn small primary" id="btn-add-carga-2">+ Agregar primera carga</button></div>');
+  } else {
+    const ex = document.getElementById('cargas-empty');
+    if(ex) ex.remove();
+  }
+}
+
+function renderResultados(){
+  const r = calcularTodo();
+
+  // resumen por tipo
+  document.getElementById('resumen-body').innerHTML = r.resumen.map(x=>`
+    <tr>
+      <td>${esc(x.nombre)}</td>
+      <td class="num">${fmt(x.pW,0)}</td>
+      <td class="num">${fmt(x.pVA,0)}</td>
+      <td class="num">${fmt(x.fd,0)}%</td>
+      <td class="num">${fmt(x.demW,0)}</td>
+      <td class="num">${fmt(x.demVA,0)}</td>
+    </tr>`).join('') + `
+    <tr style="font-weight:600; background:var(--surface-2);">
+      <td>TOTAL</td><td class="num">${fmt(r.totalPW,0)}</td><td class="num">${fmt(r.totalPVA,0)}</td><td></td>
+      <td class="num">${fmt(r.totalDemW,0)}</td><td class="num">${fmt(r.totalDemVA,0)}</td>
+    </tr>`;
+
+  // alimentador
+  document.getElementById('alimentador-box').innerHTML = `
+    <div class="grid cols-4">
+      <div class="stat"><div class="lbl">Corriente de diseño</div><div class="val">${fmt(r.iTotal,1)} <small>A</small></div></div>
+      <div class="stat"><div class="lbl">Breaker principal</div><div class="val">${fmt(r.dimAlim.breaker,0)} <small>A</small></div></div>
+      <div class="stat"><div class="lbl">Conductor sugerido</div><div class="val">${esc(r.dimAlim.conductor.label)}</div></div>
+      <div class="stat"><div class="lbl">Caída de tensión</div><div class="val">${r.dimAlim.cdt==null?'—':fmt(r.dimAlim.cdt,2)+'%'}</div></div>
+    </div>
+    <p class="hint" style="margin-top:12px; margin-bottom:0;">Alimentador ${r.alimFases===3?'trifásico':'monofásico'} a ${esc(r.vrefAlim)} V. ${state.proyecto.longAlim?('Calculado con '+state.proyecto.longAlim+' m de longitud.'):'Ingrese la longitud del alimentador en la pestaña «Proyecto» para estimar la caída de tensión.'}</p>`;
+
+  // circuitos
+  if(r.circuitos.length===0){
+    document.getElementById('circuitos-wrap').innerHTML = '<div class="empty">No hay circuitos que generar todavía — agregue cargas en la pestaña «Cargas».</div>';
+  } else {
+    document.getElementById('circuitos-wrap').innerHTML = `
+      <div class="tablewrap"><table>
+        <thead><tr>
+          <th>N°</th><th>Tipo</th><th>Descripción</th><th class="num">Fases</th>
+          <th class="num">I diseño (A)</th><th class="num">Breaker</th><th>Conductor</th>
+          <th class="num">% uso</th><th class="num">Caída tensión</th><th>Obs.</th>
+        </tr></thead>
+        <tbody>${r.circuitos.map(c=>`
+          <tr>
+            <td class="num compact">${c.n}</td>
+            <td>${esc(c.tipo)}${c.dedicado?' <span class="chip">dedicado</span>':''}</td>
+            <td title="${esc(c.items.map(i=>i.tag+' — '+i.lugar).join('; '))}">${esc(c.items.map(i=>i.tag).filter((v,i,a)=>a.indexOf(v)===i).join(', '))} ${c.items.length>1?'<span class="pill neutral">×'+c.items.length+'</span>':''}</td>
+            <td class="num">${c.fases}</td>
+            <td class="num">${fmt(c.iDiseno,2)}</td>
+            <td class="num compact">${fmt(c.breaker,0)} A</td>
+            <td class="compact">${esc(c.conductor.label)}</td>
+            <td class="num">${pillUso(c.pctUso)}</td>
+            <td class="num">${pillCdt(c.cdt, state.proyecto.cmaxRamal)}</td>
+            <td>${c.avisos.length?('<span class="pill bad">⚠ revisar</span>'):'<span class="pill good">ok</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+  }
+
+  // avisos globales
+  const avisos = [];
+  r.circuitos.forEach(c=>c.avisos.forEach(a=> avisos.push('Circuito N°'+c.n+' ('+c.tipo+'): '+a)) );
+  if(r.dimAlim.cdt!=null && r.dimAlim.cdt>state.proyecto.cmaxTotal) avisos.push('El alimentador principal excede la caída de tensión total máxima ('+state.proyecto.cmaxTotal+'%).');
+  if(state.cargas.length===0) avisos.push('Cargue cargas para obtener resultados.');
+  document.getElementById('avisos-box').innerHTML = avisos.length
+    ? '<ul style="margin:0; padding-left:20px;">'+avisos.map(a=>'<li style="margin-bottom:6px;">'+esc(a)+'</li>').join('')+'</ul>'
+    : '<p class="hint" style="margin:0;">Sin advertencias detectadas con los parámetros actuales.</p>';
+}
+
+/* ========================= ACCIONES ========================= */
+
+function addCarga(prefill){
+  const t = state.tipos[0];
+  const base = {
+    id: nextId(), tipo: t.nombre, tag:'', lugar:'', caracteristicas:'',
+    cantidad:1, potUnit:0, fp:t.fp, fases:t.fases, continua:false, dedicado:false, longitud:null, respaldado:true
+  };
+  const c = Object.assign(base, prefill||{});
+  if(prefill && prefill.potUnit!=null && prefill.cantidad!=null && base.dedicado===false && prefill.dedicado==null){
+    c.dedicado = (c.potUnit*c.cantidad) > state.proyecto.umbral;
+  }
+  state.cargas.push(c);
+  render();
+}
+
+function cargarEjemplo(){
+  state.cargas = [];
+  EJEMPLO_CARGAS.forEach(row=>{
+    const [tipo,tag,lugar,caract,cant,pot] = row;
+    const t = tipoOf(tipo);
+    const dedicado = (cant*pot) > state.proyecto.umbral;
+    const respaldado = tag !== 'Aire Acondicionado'; // el A/A queda fuera del respaldo de generador/UPS
+    state.cargas.push({id:nextId(), tipo, tag, lugar, caracteristicas:caract, cantidad:cant, potUnit:pot,
+      fp: t?t.fp:1, fases: t?t.fases:1, continua:false, dedicado, longitud:null, respaldado});
+  });
+  document.getElementById('p-nombre').value = 'Sala de Monitoreo El Tabo';
+  state.proyecto.nombre = 'Sala de Monitoreo El Tabo';
+  render();
+}
+
+function applySistema(key){
+  const s = SISTEMAS[key];
+  if(!s) return;
+  state.proyecto.sistema=key;
+  state.proyecto.vfase=s.vfase; state.proyecto.vlinea=s.vlinea; state.proyecto.hz=s.hz;
+  state.proyecto.calibre=s.calibre; state.proyecto.serie=s.serie;
+  syncProyectoInputs();
+  render();
+}
+
+function syncProyectoInputs(){
+  const p = state.proyecto;
+  document.getElementById('p-nombre').value = p.nombre;
+  document.getElementById('p-cliente').value = p.cliente;
+  document.getElementById('p-ubicacion').value = p.ubicacion;
+  document.getElementById('p-fecha').value = p.fecha;
+  document.getElementById('p-responsable').value = p.responsable;
+  document.getElementById('p-ref').value = p.ref;
+  document.getElementById('p-sistema').value = p.sistema;
+  document.getElementById('p-vfase').value = p.vfase;
+  document.getElementById('p-vlinea').value = p.vlinea;
+  document.getElementById('p-hz').value = p.hz;
+  document.getElementById('p-alim-fases').value = p.alimFases;
+  document.getElementById('p-calibre').value = p.calibre;
+  document.getElementById('p-material').value = p.material;
+  document.getElementById('p-serie').value = p.serie;
+  document.getElementById('p-cmax-ramal').value = p.cmaxRamal;
+  document.getElementById('p-cmax-total').value = p.cmaxTotal;
+  document.getElementById('p-util').value = p.util;
+  document.getElementById('p-umbral').value = p.umbral;
+  document.getElementById('p-long-alim').value = p.longAlim==null?'':p.longAlim;
+  document.getElementById('p-tablero-nombre').value = p.tableroNombre;
+  document.getElementById('p-tablero-polos').value = p.tableroPolos==null?'':p.tableroPolos;
+  document.getElementById('p-gen-hab').checked = !!p.genHabilitado;
+  document.getElementById('p-gen-kva').value = p.genKva;
+  document.getElementById('p-gen-fases').value = p.genFases;
+  document.getElementById('p-ups-hab').checked = !!p.upsHabilitado;
+  document.getElementById('p-ups-kva').value = p.upsKva;
+  document.getElementById('p-ups-alimenta').value = p.upsAlimenta;
+}
+
+function exportCSV(){
+  const r = calcularTodo();
+  let rows = [['N°','Tipo','Descripcion','Fases','I_diseno_A','Breaker_A','Conductor','Pct_uso','Caida_tension_pct','Observaciones']];
+  r.circuitos.forEach(c=>{
+    rows.push([c.n, c.tipo, c.items.map(i=>i.tag).join(' + '), c.fases, c.iDiseno.toFixed(2), c.breaker, c.conductor.label, c.pctUso.toFixed(1), c.cdt==null?'':c.cdt.toFixed(2), c.avisos.join(' | ')]);
+  });
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  downloadBlob(csv, 'text/csv;charset=utf-8', (state.proyecto.nombre||'circuitos')+'.csv');
+}
+function exportJSON(){
+  downloadBlob(JSON.stringify(state,null,2), 'application/json', (state.proyecto.nombre||'proyecto')+'.json');
+}
+function downloadBlob(content, type, filename){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+
+function saveLocal(){
+  try{ localStorage.setItem('calc-electrico-autosave', JSON.stringify(state)); }catch(e){}
+}
+function loadLocal(){
+  try{
+    const raw = localStorage.getItem('calc-electrico-autosave');
+    if(raw){ const s = JSON.parse(raw); if(s && s.proyecto && s.tipos && s.cargas){ state = s;
+      state.proyecto = completarProyecto(state.proyecto);
+      let maxId=0; state.cargas.forEach(c=>{ const n=parseInt((c.id||'c0').slice(1)); if(n>maxId) maxId=n; });
+      idSeq = maxId+1; return true; } }
+  }catch(e){}
+  return false;
+}
+
+/* ========================= EVENTOS ========================= */
+
+document.getElementById('tabs').addEventListener('click', e=>{
+  const btn = e.target.closest('.tab-btn'); if(!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+});
+
+document.getElementById('p-sistema').addEventListener('change', e=>{
+  if(e.target.value==='custom'){ state.proyecto.sistema='custom'; return; }
+  applySistema(e.target.value);
+});
+['p-nombre','p-cliente','p-ubicacion','p-fecha','p-responsable','p-ref','p-tablero-nombre','p-ups-alimenta'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const key = {'p-nombre':'nombre','p-cliente':'cliente','p-ubicacion':'ubicacion','p-fecha':'fecha','p-responsable':'responsable','p-ref':'ref','p-tablero-nombre':'tableroNombre','p-ups-alimenta':'upsAlimenta'}[id];
+    state.proyecto[key] = e.target.value; renderStats(); renderDiagrama(); renderTablero(); renderTableroDibujo(); renderUpsCircuitoSelect(tableroLayout()); saveLocal();
+  });
+});
+document.getElementById('p-gen-hab').addEventListener('change', e=>{ state.proyecto.genHabilitado = e.target.checked; renderDiagrama(); saveLocal(); });
+document.getElementById('p-ups-hab').addEventListener('change', e=>{ state.proyecto.upsHabilitado = e.target.checked; renderDiagrama(); saveLocal(); });
+document.getElementById('p-gen-fases').addEventListener('change', e=>{ state.proyecto.genFases = Number(e.target.value); renderDiagrama(); saveLocal(); });
+document.getElementById('p-ups-circuito').addEventListener('change', e=>{ state.proyecto.upsCircuito = Number(e.target.value); renderDiagrama(); renderTableroDibujo(); saveLocal(); });
+const numericFieldMap = {
+  'p-vfase':'vfase','p-vlinea':'vlinea','p-hz':'hz','p-cmax-ramal':'cmaxRamal','p-cmax-total':'cmaxTotal',
+  'p-util':'util','p-umbral':'umbral','p-long-alim':'longAlim','p-tablero-polos':'tableroPolos',
+  'p-gen-kva':'genKva','p-ups-kva':'upsKva'
+};
+const CRITICOS = ['p-vfase','p-vlinea','p-hz']; // nunca deben quedar en 0/null: romperían las divisiones
+Object.keys(numericFieldMap).forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const key = numericFieldMap[id];
+    if(e.target.value===''){
+      if(CRITICOS.includes(id)) return; // esperar a que ingrese un valor válido antes de recalcular
+      state.proyecto[key] = null;
+    } else {
+      const n = Number(e.target.value);
+      if(CRITICOS.includes(id) && (!n || n<=0)) return;
+      state.proyecto[key] = n;
+    }
+    render();
+  });
+});
+document.getElementById('p-alim-fases').addEventListener('change', e=>{ state.proyecto.alimFases = Number(e.target.value); render(); });
+document.getElementById('p-calibre').addEventListener('change', e=>{ state.proyecto.calibre = e.target.value; render(); });
+document.getElementById('p-material').addEventListener('change', e=>{ state.proyecto.material = e.target.value; render(); });
+document.getElementById('p-serie').addEventListener('change', e=>{ state.proyecto.serie = e.target.value; render(); });
+
+document.getElementById('btn-add-tipo').addEventListener('click', ()=>{
+  state.tipos.push({nombre:'Nuevo tipo '+(state.tipos.length+1), fp:1, fases:1, fd:100, breaker:20});
+  render();
+});
+function handleTipoInput(e){
+  const i = e.target.dataset.i, f = e.target.dataset.ttipo;
+  if(i==null) return;
+  const t = state.tipos[i];
+  if(f==='nombre'){ const old=t.nombre; t.nombre=e.target.value; state.cargas.forEach(c=>{ if(c.tipo===old) c.tipo=t.nombre; }); }
+  else if(f==='fases') t.fases = Number(e.target.value);
+  else t[f] = Number(e.target.value);
+}
+// Mientras se escribe: solo recalcular resultados (no reconstruir la tabla, para no perder el foco).
+document.getElementById('tipos-body').addEventListener('input', e=>{ handleTipoInput(e); renderDerived(); });
+// Al confirmar el cambio (blur / selección): reconstruir tablas para sincronizar
+// los <select> de "Cargas" con el nombre/orden final de los tipos.
+document.getElementById('tipos-body').addEventListener('change', ()=> render());
+document.getElementById('tipos-body').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-del-tipo]'); if(!btn) return;
+  if(state.tipos.length<=1){ alert('Debe quedar al menos un tipo de circuito.'); return; }
+  state.tipos.splice(Number(btn.dataset.delTipo),1);
+  render();
+});
+
+document.getElementById('btn-add-carga').addEventListener('click', ()=>addCarga());
+document.getElementById('panel-cargas').addEventListener('click', e=>{
+  if(e.target.id==='btn-add-carga-2') addCarga();
+});
+document.getElementById('btn-ejemplo').addEventListener('click', ()=>{
+  if(state.cargas.length && !confirm('Esto reemplazará el listado actual de cargas por el ejemplo. ¿Continuar?')) return;
+  cargarEjemplo();
+});
+document.getElementById('btn-vaciar').addEventListener('click', ()=>{
+  if(state.cargas.length && !confirm('¿Vaciar todas las cargas del listado?')) return;
+  state.cargas = []; render();
+});
+
+function handleCargaInput(e){
+  const tr = e.target.closest('tr[data-row]'); if(!tr) return null;
+  const id = tr.dataset.row; const c = state.cargas.find(x=>x.id===id); if(!c) return null;
+  const f = e.target.dataset.f; if(!f) return null;
+  if(f==='tipo') c.tipo = e.target.value;
+  else if(f==='tag') c.tag = e.target.value;
+  else if(f==='lugar') c.lugar = e.target.value;
+  else if(f==='caracteristicas') c.caracteristicas = e.target.value;
+  else if(f==='cantidad') c.cantidad = Number(e.target.value)||0;
+  else if(f==='potUnit') c.potUnit = Number(e.target.value)||0;
+  else if(f==='fp') c.fp = Number(e.target.value)||1;
+  else if(f==='fases') c.fases = Number(e.target.value);
+  else if(f==='continua') c.continua = e.target.checked;
+  else if(f==='dedicado') c.dedicado = e.target.checked;
+  else if(f==='respaldado') c.respaldado = e.target.checked;
+  else if(f==='longitud') c.longitud = e.target.value===''? null : Number(e.target.value);
+  return c;
+}
+// Mientras se escribe: actualizar solo las celdas calculadas de esa fila y los
+// totales/resultados — nunca reconstruir los <input>, para no perder el foco.
+document.getElementById('cargas-body').addEventListener('input', e=>{
+  const c = handleCargaInput(e); if(!c) return;
+  patchCargaRow(c); renderDerived();
+});
+// Al confirmar el cambio (blur en texto/número, o selección en select/checkbox):
+// reconstruir la tabla completa para que quede 100% consistente.
+document.getElementById('cargas-body').addEventListener('change', ()=> render());
+document.getElementById('cargas-body').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-del-carga]'); if(!btn) return;
+  state.cargas = state.cargas.filter(c=>c.id!==btn.dataset.delCarga);
+  render();
+});
+
+document.getElementById('btn-print').addEventListener('click', ()=>window.print());
+document.getElementById('btn-print-2').addEventListener('click', ()=>window.print());
+document.getElementById('btn-print-3').addEventListener('click', ()=>window.print());
+document.getElementById('btn-svg').addEventListener('click', ()=>{
+  const svgEl = document.querySelector('#diagrama-wrap svg');
+  if(!svgEl) return;
+  downloadBlob(svgEl.outerHTML, 'image/svg+xml', (state.proyecto.nombre||'diagrama-unifilar')+'.svg');
+});
+document.getElementById('btn-dxf').addEventListener('click', ()=>{
+  downloadBlob(diagramaToDXF(), 'application/dxf', (state.proyecto.nombre||'diagrama-unifilar')+'.dxf');
+});
+document.getElementById('btn-svg-tablero').addEventListener('click', ()=>{
+  const svgEl = document.querySelector('#tablero-dibujo-wrap svg');
+  if(!svgEl) return;
+  downloadBlob(svgEl.outerHTML, 'image/svg+xml', (state.proyecto.tableroNombre||'tablero')+'.svg');
+});
+document.getElementById('btn-dxf-tablero').addEventListener('click', ()=>{
+  downloadBlob(tableroToDXF(), 'application/dxf', (state.proyecto.tableroNombre||'tablero')+'.dxf');
+});
+document.getElementById('btn-csv').addEventListener('click', exportCSV);
+document.getElementById('btn-export-json').addEventListener('click', exportJSON);
+document.getElementById('input-json').addEventListener('change', e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    try{
+      const s = JSON.parse(ev.target.result);
+      if(s && s.proyecto && s.tipos && s.cargas){
+        state = s;
+        state.proyecto = completarProyecto(state.proyecto);
+        let maxId=0; state.cargas.forEach(c=>{ const n=parseInt((c.id||'c0').slice(1))||0; if(n>maxId) maxId=n; });
+        idSeq = maxId+1;
+        syncProyectoInputs(); render();
+      } else alert('El archivo no tiene el formato esperado.');
+    }catch(err){ alert('No se pudo leer el archivo: '+err.message); }
+  };
+  reader.readAsText(file);
+});
+
+/* ========================= INICIO ========================= */
+
+const restored = loadLocal();
+if(!state.proyecto.fecha) state.proyecto.fecha = new Date().toISOString().slice(0,10);
+syncProyectoInputs();
+if(!restored && state.cargas.length===0){
+  // deja listo el ejemplo real de la empresa como punto de partida
+  cargarEjemplo();
+} else {
+  render();
+}
+
+})();
+</script>
+</body>
+</html>

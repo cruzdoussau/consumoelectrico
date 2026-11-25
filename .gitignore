@@ -1,0 +1,14 @@
+# Archivos de pruebas y dependencias temporales
+.playwright-cli/
+output/
+**/output/
+node_modules/
+**/node_modules/
+
+# Archivos de bloqueo de Excel y configuración local
+~$*
+.env
+.env.*
+!.env.example
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,1462 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cálculo Eléctrico y Planos CAD</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F3EF; --surface:#FFFFFF; --surface-2:#E7E9E1; --surface-3:#DBDED3;
+  --ink:#1A2420; --ink-soft:#4B5750; --ink-faint:#7C8781; --line:#D2D6C8;
+  --accent:#BF5B1E; --accent-ink:#FFFFFF; --accent-soft:#F2E2D3;
+  --accent2:#2E4A5E; --accent2-soft:#DCE6EA;
+  --phase2:#6B4C7A; --phase3:#2F6B66;
+  --good:#2F7A52; --good-soft:#E1F0E6;
+  --warn:#A6760B; --warn-soft:#F6ECD1;
+  --bad:#A3312B; --bad-soft:#F6E0DC;
+  --shadow:0 1px 2px rgba(26,36,32,.07), 0 6px 16px rgba(26,36,32,.06);
+  --font-display:"Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --font-body:"IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:"IBM Plex Mono", "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161A; --surface:#171E22; --surface-2:#1E262B; --surface-3:#263038;
+    --ink:#ECEFE8; --ink-soft:#AEB8AE; --ink-faint:#7E8A84; --line:#2B3338;
+    --accent:#E0813D; --accent-ink:#171107; --accent-soft:#3A2A1C;
+    --accent2:#7FB0CF; --accent2-soft:#1E2E36;
+    --phase2:#B591C7; --phase3:#6FC2B8;
+    --good:#5FBE8B; --good-soft:#17291F;
+    --warn:#D7AE4E; --warn-soft:#2E2512;
+    --bad:#E2766A; --bad-soft:#301C1A;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 8px 20px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161A; --surface:#171E22; --surface-2:#1E262B; --surface-3:#263038;
+  --ink:#ECEFE8; --ink-soft:#AEB8AE; --ink-faint:#7E8A84; --line:#2B3338;
+  --accent:#E0813D; --accent-ink:#171107; --accent-soft:#3A2A1C;
+  --accent2:#7FB0CF; --accent2-soft:#1E2E36;
+  --phase2:#B591C7; --phase3:#6FC2B8;
+  --good:#5FBE8B; --good-soft:#17291F;
+  --warn:#D7AE4E; --warn-soft:#2E2512;
+  --bad:#E2766A; --bad-soft:#301C1A;
+  --shadow:0 1px 2px rgba(0,0,0,.45), 0 8px 20px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  font-size:15px; line-height:1.45; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:700; margin:0; text-wrap:balance; letter-spacing:.2px;}
+button,input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
+a{color:var(--accent2);}
+::selection{background:var(--accent-soft);}
+
+.topbar{
+  position:sticky; top:0; z-index:30; background:var(--surface);
+  border-bottom:1px solid var(--line); box-shadow:var(--shadow);
+}
+.topbar-inner{max-width:1280px; margin:0 auto; padding:14px 22px 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:14px 22px;}
+.brand{display:flex; align-items:baseline; gap:10px; margin-right:auto;}
+.brand .mark{
+  width:30px; height:30px; border-radius:7px; background:var(--accent); color:var(--accent-ink);
+  display:flex; align-items:center; justify-content:center; font-family:var(--font-display);
+  font-size:15px; font-weight:700; flex:none; align-self:center;
+}
+.brand h1{font-size:19px; color:var(--ink);}
+.brand .tagline{font-size:12px; color:var(--ink-faint); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em;}
+.company{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em; align-self:center;}
+
+.statstrip{
+  max-width:1280px; margin:0 auto; padding:12px 22px 14px; display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:1px; background:var(--line);
+  border-radius:10px; overflow:hidden; margin-top:12px; border:1px solid var(--line);
+}
+.stat{background:var(--surface-2); padding:9px 14px 10px;}
+.stat .lbl{font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); font-family:var(--font-mono);}
+.stat .val{font-family:var(--font-mono); font-size:19px; font-weight:500; font-variant-numeric:tabular-nums; margin-top:2px;}
+.stat .val small{font-size:11px; color:var(--ink-faint); font-weight:400;}
+
+.tabs{max-width:1280px; margin:16px auto 0; padding:0 22px; display:flex; gap:6px; border-bottom:1px solid var(--line);}
+.tab-btn{
+  background:none; border:none; padding:10px 16px; cursor:pointer; font-family:var(--font-display);
+  font-weight:700; font-size:14.5px; color:var(--ink-faint); border-bottom:2px solid transparent;
+  margin-bottom:-1px; display:flex; align-items:center; gap:7px;
+}
+.tab-btn .n{font-family:var(--font-mono); font-size:11px; background:var(--surface-3); color:var(--ink-soft); border-radius:99px; padding:1px 7px;}
+.tab-btn.active{color:var(--accent); border-bottom-color:var(--accent);}
+.tab-btn:hover{color:var(--ink);}
+
+main{max-width:1280px; margin:0 auto; padding:22px; display:flex; flex-direction:column; gap:18px;}
+.panel{display:none; flex-direction:column; gap:18px;}
+.panel.active{display:flex;}
+
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px 20px; box-shadow:var(--shadow);
+}
+.card > h2{font-size:17px; display:flex; align-items:center; gap:9px; margin-bottom:4px;}
+.card > h2 .idx{font-family:var(--font-mono); font-size:12px; color:var(--accent); border:1px solid var(--accent); border-radius:99px; width:20px; height:20px; display:flex; align-items:center; justify-content:center; flex:none;}
+.card .hint{font-size:12.5px; color:var(--ink-faint); margin-top:2px; margin-bottom:14px;}
+.card .hint code{font-family:var(--font-mono); background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+
+.grid{display:grid; gap:14px;}
+.grid.cols-2{grid-template-columns:repeat(2,1fr);}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:860px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
+
+label.field{display:flex; flex-direction:column; gap:5px; font-size:12.5px;}
+label.field > span{color:var(--ink-soft); font-weight:500;}
+label.field.check{flex-direction:row; align-items:center; gap:8px; font-size:13px;}
+input,select,textarea{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:7px;
+  padding:8px 10px; color:var(--ink); min-width:0;
+}
+textarea{resize:vertical; font-family:var(--font-body);}
+input:focus,select:focus,textarea:focus,button:focus-visible{
+  outline:2px solid var(--accent2); outline-offset:1px;
+}
+input[type="number"]{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+input[type="checkbox"]{width:16px; height:16px; accent-color:var(--accent);}
+
+.btn{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:9px 15px;
+  cursor:pointer; font-weight:600; font-size:13px; display:inline-flex; align-items:center; gap:7px;
+  color:var(--ink); white-space:nowrap;
+}
+.btn:hover{border-color:var(--ink-faint);}
+.btn.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+.btn.primary:hover{filter:brightness(1.07);}
+.btn.ghost{background:transparent;}
+.btn.small{padding:5px 10px; font-size:12px; border-radius:6px;}
+.btn.danger{color:var(--bad);}
+.btnrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+
+table{width:100%; border-collapse:collapse; font-size:13px;}
+.tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:9px;}
+th,td{padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+thead th{
+  background:var(--surface-2); font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--ink-soft); font-weight:500; position:sticky; top:0;
+}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--surface-2);}
+td.num,th.num{text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+td input, td select{width:100%; padding:5px 7px; font-size:12.5px;}
+td.compact{white-space:nowrap;}
+tfoot td{font-weight:600; background:var(--surface-2); border-top:2px solid var(--line); border-bottom:none; font-family:var(--font-mono);}
+.section-row td{background:var(--accent2-soft); font-family:var(--font-display); font-weight:700; color:var(--accent2); letter-spacing:.03em; font-size:12.5px; text-transform:uppercase;}
+
+.pill{display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:99px; font-size:11.5px; font-weight:600; font-family:var(--font-mono); white-space:nowrap;}
+.pill.good{background:var(--good-soft); color:var(--good);}
+.pill.warn{background:var(--warn-soft); color:var(--warn);}
+.pill.bad{background:var(--bad-soft); color:var(--bad);}
+.pill.neutral{background:var(--surface-3); color:var(--ink-soft);}
+.pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor; flex:none;}
+
+.chip{display:inline-flex; align-items:center; background:var(--accent-soft); color:var(--accent); border-radius:6px; padding:2px 8px; font-size:11.5px; font-weight:600; font-family:var(--font-mono);}
+
+.empty{padding:28px; text-align:center; color:var(--ink-faint); font-size:13.5px;}
+.empty .btn{margin-top:10px;}
+
+.disclaimer{
+  font-size:12px; color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--line);
+  border-radius:9px; padding:10px 14px; line-height:1.5;
+}
+.disclaimer b{color:var(--ink-soft);}
+
+footer{max-width:1280px; margin:0 auto; padding:10px 22px 40px; font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+
+.rowflex{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+.panelboard{
+  border:3px solid var(--accent2); border-radius:10px; background:var(--surface-2);
+  padding:16px; max-width:820px;
+}
+.panelboard-head{
+  font-family:var(--font-display); font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+  text-align:center; font-size:14px; color:var(--accent2); padding-bottom:10px; border-bottom:1px solid var(--line);
+}
+.panelboard-main{
+  background:var(--accent2-soft); border:1.5px solid var(--accent2); border-radius:7px; padding:9px;
+  text-align:center; font-family:var(--font-mono); font-weight:700; font-size:13px; color:var(--accent2);
+  margin:12px 0 16px;
+}
+.panelboard-cols{display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; position:relative;}
+.panelboard-cols::before{
+  content:""; position:absolute; left:50%; top:0; bottom:0; width:0; border-left:1px dashed var(--line);
+}
+.panelboard-col{display:flex; flex-direction:column; gap:7px;}
+.slot{
+  display:flex; gap:9px; align-items:flex-start; border:1.5px solid var(--line); border-radius:7px;
+  padding:7px 9px; background:var(--surface); min-height:46px;
+}
+.slot.warn{border-color:var(--warn);}
+.slot.bad{border-color:var(--bad);}
+.slot.reserve{border-style:dashed; opacity:.5; align-items:center; justify-content:center;}
+.slot-num{
+  font-family:var(--font-mono); font-weight:700; font-size:11px; width:22px; height:22px; border-radius:50%;
+  background:var(--surface-3); color:var(--ink-soft); display:flex; align-items:center; justify-content:center; flex:none;
+}
+.slot-body{display:flex; flex-direction:column; gap:2px; min-width:0;}
+.slot-top{display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
+.slot-breaker{font-family:var(--font-mono); font-weight:600; font-size:12px; color:var(--ink);}
+.slot-phase{font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); border:1px solid var(--line); border-radius:4px; padding:0 4px;}
+.slot-desc{font-size:11px; color:var(--ink-soft); line-height:1.35;}
+@media (max-width:620px){ .panelboard-cols{grid-template-columns:1fr;} .panelboard-cols::before{display:none;} }
+
+@media print{
+  .topbar, .tabs, .btnrow, .no-print{display:none !important;}
+  body{background:#fff; color:#000;}
+  main{padding:0;}
+  .panel{display:flex !important;}
+  .card{box-shadow:none; border:1px solid #999; break-inside:avoid;}
+  .tablewrap{border:1px solid #999;}
+  thead th{background:#eee !important; color:#000 !important;}
+  .pill{border:1px solid currentColor;}
+  .panelboard{break-inside:avoid; border-color:#333;}
+  .slot{break-inside:avoid;}
+}
+
+.cad-viewport{height:68vh;min-height:380px;overflow:auto;background:#e2e6e4 !important;padding:16px !important;overscroll-behavior:contain;}
+.cad-viewport svg{display:block;max-width:none;background:#fff;box-shadow:0 2px 12px #0002;}
+.cad-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 8px;}
+.cad-toolbar output{min-width:55px;font-family:var(--font-mono);font-size:12px;}
+@media print{.cad-toolbar{display:none !important}.cad-viewport{height:auto;min-height:0;overflow:visible;background:white !important;padding:0 !important}.cad-viewport svg{width:100% !important;height:auto !important;box-shadow:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="mark">Ω</div>
+      <div>
+        <h1>Cálculo Eléctrico y Circuitos</h1>
+        <div class="tagline">Consumo de cargas → dimensionamiento de circuitos</div>
+      </div>
+    </div>
+    <div class="company">Conectatech · Ingeniería Albamar</div>
+  </div>
+  <div class="statstrip" id="statstrip"></div>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="proyecto">1 · Proyecto</button>
+    <button class="tab-btn" data-tab="cargas">2 · Cargas <span class="n" id="tab-n-cargas">0</span></button>
+    <button class="tab-btn" data-tab="resultados">3 · Circuitos y resultados</button>
+    <button class="tab-btn" data-tab="diagrama">4 · Diagrama unifilar</button>
+    <button class="tab-btn" data-tab="tablero">5 · Tablero eléctrico</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============ PANEL 1: PROYECTO ============ -->
+  <section class="panel active" id="panel-proyecto">
+
+    <div class="card">
+      <h2><span class="idx">1</span>Datos del proyecto</h2>
+      <div class="grid cols-4">
+        <label class="field"><span>Nombre del proyecto</span><input id="p-nombre" type="text" placeholder="Ej: Sala de Monitoreo El Tabo"></label>
+        <label class="field"><span>Cliente</span><input id="p-cliente" type="text" placeholder="Ej: Municipalidad de El Tabo"></label>
+        <label class="field"><span>Ubicación</span><input id="p-ubicacion" type="text" placeholder="Ej: El Tabo, Región de Valparaíso"></label>
+        <label class="field"><span>Fecha</span><input id="p-fecha" type="date"></label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Responsable / calculista</span><input id="p-responsable" type="text" placeholder="Nombre del ingeniero(a)"></label>
+        <label class="field"><span>N° de proyecto / referencia</span><input id="p-ref" type="text" placeholder="Opcional"></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">2</span>Parámetros eléctricos</h2>
+      <p class="hint">Preconfigurado para Chile (220V/380V · 50Hz, calibres en mm², referencia NCh Elec 4/2003). Cámbielo si el proyecto es en otro país o usa otra norma — todo es editable.</p>
+      <div class="grid cols-4">
+        <label class="field"><span>Sistema de tensión</span>
+          <select id="p-sistema">
+            <option value="cl">220V 1F / 380V 3F · 50Hz (Chile)</option>
+            <option value="us120">120V 1F / 208V 3F · 60Hz</option>
+            <option value="us120_240">120V / 240V 1F · 60Hz</option>
+            <option value="eu230">230V 1F / 400V 3F · 50Hz</option>
+            <option value="custom">Personalizado…</option>
+          </select>
+        </label>
+        <label class="field"><span>Tensión fase-neutro (V)</span><input id="p-vfase" type="number" step="1" value="220"></label>
+        <label class="field"><span>Tensión entre fases (V)</span><input id="p-vlinea" type="number" step="1" value="380"></label>
+        <label class="field"><span>Frecuencia (Hz)</span><input id="p-hz" type="number" step="1" value="50"></label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Alimentador principal</span>
+          <select id="p-alim-fases"><option value="3">Trifásico</option><option value="1">Monofásico</option></select>
+        </label>
+        <label class="field"><span>Sistema de calibres</span>
+          <select id="p-calibre"><option value="mm2">mm² (IEC / NCh)</option><option value="awg">AWG (NEC)</option></select>
+        </label>
+        <label class="field"><span>Material del conductor</span>
+          <select id="p-material"><option value="cu">Cobre</option><option value="al">Aluminio</option></select>
+        </label>
+        <label class="field"><span>Serie de protecciones</span>
+          <select id="p-serie"><option value="iec">IEC (6,10,16,20,25,32…A)</option><option value="nema">NEMA/UL (15,20,30,40…A)</option></select>
+        </label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Caída de tensión máx. — circuito ramal (%)</span><input id="p-cmax-ramal" type="number" step="0.1" value="3"></label>
+        <label class="field"><span>Caída de tensión máx. — total (%)</span><input id="p-cmax-total" type="number" step="0.1" value="5"></label>
+        <label class="field"><span>Factor de utilización por circuito (0–1)</span><input id="p-util" type="number" step="0.05" min="0.1" max="1" value="0.8"></label>
+        <label class="field"><span>Umbral para circuito dedicado (W)</span><input id="p-umbral" type="number" step="50" value="1500"></label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field"><span>Longitud estimada del alimentador principal (m)</span><input id="p-long-alim" type="number" step="1" placeholder="Opcional"></label>
+        <label class="field"><span>Nombre del tablero principal</span><input id="p-tablero-nombre" type="text" placeholder="Ej: TD-1"></label>
+        <label class="field"><span>N° de polos del tablero</span><input id="p-tablero-polos" type="number" step="1" min="2" placeholder="Automático"></label>
+      </div>
+      <p class="disclaimer" style="margin-top:14px;">
+        <b>Nota técnica:</b> las tablas de ampacidad y caída de tensión usadas aquí son valores de referencia orientativos para anteproyecto.
+        Antes de construir, verifique calibres y protecciones contra la tabla oficial de la norma aplicable al proyecto
+        (en Chile, NCh Elec 4/2003 / exigencias SEC) según método de instalación, temperatura ambiente y agrupamiento real de conductores.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">3</span>Equipos de respaldo (generador / UPS)</h2>
+      <p class="hint">Se muestran en el diagrama unilineal como fuente de respaldo aguas arriba (generador, a través de un tablero de transferencia/ATS) y aguas abajo (UPS) del tablero principal. En «Cargas» puede marcar, carga por carga, si queda <b>respaldada</b> por el generador — por ejemplo, el aire acondicionado normalmente se excluye.</p>
+      <div class="grid cols-4">
+        <label class="field check"><input id="p-gen-hab" type="checkbox"><span>Grupo generador diésel</span></label>
+        <label class="field"><span>Potencia generador (kVA)</span><input id="p-gen-kva" type="number" step="0.5" min="0"></label>
+        <label class="field"><span>Fases del generador</span>
+          <select id="p-gen-fases"><option value="1">Monofásico</option><option value="3">Trifásico</option></select>
+        </label>
+      </div>
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label class="field check"><input id="p-ups-hab" type="checkbox"><span>UPS</span></label>
+        <label class="field"><span>Potencia UPS (kVA)</span><input id="p-ups-kva" type="number" step="0.5" min="0"></label>
+        <label class="field"><span>El UPS alimenta</span><input id="p-ups-alimenta" type="text" placeholder="Ej: Rack / cargas críticas"></label>
+        <label class="field"><span>Circuito del tablero que alimenta al UPS</span>
+          <select id="p-ups-circuito"></select>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">4</span>Tipos de circuito</h2>
+      <p class="hint">Cada carga de la pestaña «Cargas» se asigna a uno de estos tipos. El <b>factor de potencia</b> y <b>fases</b> son el valor por defecto al crear una carga nueva (editable fila por fila). El <b>factor de demanda</b> se aplica al sumar el consumo total — déjelo en 100% si no corresponde aplicar demanda diversificada. El <b>breaker objetivo de agrupación</b> es la capacidad con la que el sistema intenta agrupar varias cargas pequeñas en un mismo circuito ramal.</p>
+      <div class="tablewrap">
+        <table id="tipos-table">
+          <thead><tr>
+            <th>Tipo de circuito</th><th class="num">FP def.</th><th class="num">Fases def.</th>
+            <th class="num">FD (%)</th><th class="num">Breaker objetivo (A)</th><th></th>
+          </tr></thead>
+          <tbody id="tipos-body"></tbody>
+        </table>
+      </div>
+      <div class="btnrow" style="margin-top:10px;">
+        <button class="btn small" id="btn-add-tipo">+ Agregar tipo de circuito</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 2: CARGAS ============ -->
+  <section class="panel" id="panel-cargas">
+    <div class="card">
+      <div class="rowflex">
+        <div>
+          <h2><span class="idx">1</span>Listado de cargas</h2>
+          <p class="hint">Mismas columnas que su planilla de cálculo: Tipo de circuito, Tag/Equipo, Lugar, Características, Cantidad y Potencia unitaria (W). El sistema agrega fases, FP, continuidad y longitud para poder calcular corriente, breaker y conductor.</p>
+        </div>
+        <div class="btnrow no-print">
+          <label class="btn small primary" for="input-excel">Importar Excel (.xlsx)</label>
+          <input id="input-excel" type="file" accept=".xlsx,.xls" hidden>
+          <button class="btn small" id="btn-ejemplo">Cargar ejemplo (Sala El Tabo)</button>
+          <button class="btn small danger" id="btn-vaciar">Vaciar listado</button>
+        </div>
+      </div>
+      <div id="excel-import" hidden class="disclaimer" style="margin-bottom:14px;" aria-live="polite">
+        <div class="rowflex"><b id="excel-title">Importar cargas</b><button class="btn small" id="excel-cancel">Cerrar</button></div>
+        <label class="field"><span>Hoja del archivo</span><select id="excel-sheet"></select></label>
+        <p id="excel-summary"></p>
+        <div id="excel-preview" class="tablewrap" style="max-height:260px;"></div>
+        <p>Se conservarán los parámetros del proyecto y los criterios de cada tipo de carga (FP y fases). Se asignan circuitos dedicados según el umbral configurado. El respaldo se solicita inicialmente para todas las cargas: revise la columna «Resp.» antes de usar los planos. Las longitudes quedan pendientes.</p>
+        <button class="btn small primary" id="excel-apply" disabled>Usar estas cargas (reemplaza el listado)</button>
+      </div>
+      <div class="tablewrap">
+        <table id="cargas-table">
+          <thead><tr>
+            <th style="min-width:150px;">Tipo de circuito</th>
+            <th style="min-width:150px;">Tag / Equipo</th>
+            <th style="min-width:130px;">Lugar</th>
+            <th style="min-width:130px;">Características</th>
+            <th class="num" style="width:70px;">Cant.</th>
+            <th class="num" style="width:95px;">Pot. unit. (W)</th>
+            <th class="num" style="width:95px;">Pot. total (W)</th>
+            <th class="num" style="width:75px;">FP</th>
+            <th class="num" style="width:70px;">Fases</th>
+            <th style="width:60px;" title="Carga continua (>3h)">Cont.</th>
+            <th style="width:60px;" title="Forzar circuito dedicado">Dedic.</th>
+            <th style="width:60px;" title="¿Esta carga queda respaldada por el generador/UPS?">Resp.</th>
+            <th class="num" style="width:80px;">Long. (m)</th>
+            <th class="num" style="width:75px;">I (A)</th>
+            <th style="width:40px;"></th>
+          </tr></thead>
+          <tbody id="cargas-body"></tbody>
+          <tfoot><tr>
+            <td colspan="6">TOTAL</td>
+            <td class="num" id="tot-pw">0</td>
+            <td colspan="6"></td>
+            <td class="num" id="tot-i">0</td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <div class="btnrow" style="margin-top:10px;">
+        <button class="btn small primary" id="btn-add-carga">+ Agregar carga</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL 3: RESULTADOS ============ -->
+  <section class="panel" id="panel-resultados">
+
+    <div class="card">
+      <h2><span class="idx">1</span>Resumen de demanda por tipo de circuito</h2>
+      <div class="tablewrap">
+        <table id="resumen-table">
+          <thead><tr>
+            <th>Tipo de circuito</th>
+            <th class="num">Potencia instalada (W)</th>
+            <th class="num">Potencia instalada (VA)</th>
+            <th class="num">FD aplicado</th>
+            <th class="num">Demanda (W)</th>
+            <th class="num">Demanda (VA)</th>
+          </tr></thead>
+          <tbody id="resumen-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">2</span>Alimentador principal sugerido</h2>
+      <div id="alimentador-box"></div>
+    </div>
+
+    <div class="card">
+      <div class="rowflex">
+        <h2><span class="idx">3</span>Cuadro de circuitos generado</h2>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-print">Imprimir / exportar PDF</button>
+          <button class="btn small" id="btn-csv">Exportar CSV</button>
+          <button class="btn small" id="btn-export-json">Guardar proyecto (.json)</button>
+          <label class="btn small" style="cursor:pointer;">Cargar proyecto (.json)<input type="file" id="input-json" accept=".json" style="display:none;"></label>
+        </div>
+      </div>
+      <p class="hint">Agrupación automática por tipo de circuito, fases y continuidad, respetando el factor de utilización definido en «Proyecto». Las cargas marcadas como <b>dedicadas</b> (o cuya corriente ya supera el objetivo de agrupación) reciben su propio circuito.</p>
+      <div id="circuitos-wrap"></div>
+    </div>
+
+    <div class="card">
+      <h2>Notas y advertencias</h2>
+      <div id="avisos-box"></div>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 4: DIAGRAMA UNIFILAR ============ -->
+  <section class="panel" id="panel-diagrama">
+    <div class="card">
+      <div class="rowflex">
+        <h2><span class="idx">1</span>Diagrama unifilar editable en CAD</h2>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-print-2">Imprimir / exportar PDF</button>
+          <button class="btn small" id="btn-svg">Descargar SVG</button>
+          <button class="btn small" id="btn-dxf">Descargar DXF (AutoCAD)</button>
+        </div>
+      </div>
+      <p class="hint">Vista y DXF se generan desde la misma geometría. Incluye cada equipo con cantidad, potencia, ubicación y características, además de los componentes generales. Use el zoom y las barras de desplazamiento para revisar el detalle.</p>
+      <p class="disclaimer">Esquema de anteproyecto sin escala física. Los calibres provienen del cálculo orientativo existente. Sensibilidad de diferenciales, poder de corte, curvas y conexiones N/PE requieren definición de ingeniería.</p>
+      <div class="tablewrap" style="background:var(--surface); padding:6px;" id="diagrama-wrap"></div>
+
+    </div>
+  </section>
+
+  <!-- ============ PANEL 5: TABLERO ELÉCTRICO ============ -->
+  <section class="panel" id="panel-tablero">
+    <div class="card">
+      <div class="rowflex">
+        <h2><span class="idx">1</span>Tablero · esquema de componentes</h2>
+        <div class="btnrow no-print">
+          <button class="btn small" id="btn-print-3">Imprimir / exportar PDF</button>
+          <button class="btn small" id="btn-svg-tablero">Descargar SVG</button>
+          <button class="btn small" id="btn-dxf-tablero">Descargar DXF (AutoCAD)</button>
+        </div>
+      </div>
+      <p class="hint">Esquema de componentes con detalle completo de cargas y exportación DXF por capas. Incluye interruptor general, diferencial, ATS y generador si están habilitados, circuitos, barras N/PE y UPS.</p>
+      <p class="disclaimer">La distribución representa componentes y circuitos. Para un plano de fabricación faltan modelos de protecciones, módulos DIN, borneras y dimensiones de gabinete.</p>
+      <div id="tablero-aviso"></div>
+      <div class="tablewrap" style="background:var(--surface); padding:10px;" id="tablero-dibujo-wrap"></div>
+
+    </div>
+
+    <div class="card">
+      <h2><span class="idx">2</span>Directorio de circuitos</h2>
+      <p class="hint">Directorio de circuitos. Las fases monofásicas se proponen en forma rotativa (L1, L2, L3); el balance de corrientes requiere revisión. Las posiciones de circuito no equivalen a módulos DIN.</p>
+      <div id="tablero-wrap"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Herramienta de apoyo para anteproyecto — no reemplaza el cálculo y verificación de un profesional responsable ni la memoria de cálculo exigida por la norma vigente. · Guardado automático en este navegador.
+</footer>
+
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="cad.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ========================= TABLAS DE REFERENCIA ========================= */
+
+const BREAKER_SERIES = {
+  iec:  [6,10,16,20,25,32,40,50,63,80,100,125,160,200,225,250,315,400,500,630],
+  nema: [15,20,25,30,35,40,45,50,60,70,80,90,100,110,125,150,175,200,225,250,300,350,400]
+};
+
+// Cobre, referencia orientativa (PVC, instalación en ducto/bandeja, ~30°C ambiente)
+const WIRE_MM2 = [
+  {label:'1.5 mm²', mm2:1.5, amp:15},
+  {label:'2.5 mm²', mm2:2.5, amp:21},
+  {label:'4 mm²',   mm2:4,   amp:28},
+  {label:'6 mm²',   mm2:6,   amp:36},
+  {label:'10 mm²',  mm2:10,  amp:50},
+  {label:'16 mm²',  mm2:16,  amp:68},
+  {label:'25 mm²',  mm2:25,  amp:89},
+  {label:'35 mm²',  mm2:35,  amp:110},
+  {label:'50 mm²',  mm2:50,  amp:134},
+  {label:'70 mm²',  mm2:70,  amp:171},
+  {label:'95 mm²',  mm2:95,  amp:207},
+  {label:'120 mm²', mm2:120, amp:239},
+  {label:'150 mm²', mm2:150, amp:299},
+  {label:'185 mm²', mm2:185, amp:341},
+  {label:'240 mm²', mm2:240, amp:403}
+];
+// Cobre 75°C, referencia tipo NEC Tabla 310.16 (simplificada)
+const WIRE_AWG = [
+  {label:'14 AWG', amp:20,  rPerKm:8.286, mm2:2.08},
+  {label:'12 AWG', amp:25,  rPerKm:5.211, mm2:3.31},
+  {label:'10 AWG', amp:35,  rPerKm:3.277, mm2:5.26},
+  {label:'8 AWG',  amp:50,  rPerKm:2.061, mm2:8.37},
+  {label:'6 AWG',  amp:65,  rPerKm:1.296, mm2:13.3},
+  {label:'4 AWG',  amp:85,  rPerKm:0.8151,mm2:21.2},
+  {label:'3 AWG',  amp:100, rPerKm:0.6466,mm2:26.7},
+  {label:'2 AWG',  amp:115, rPerKm:0.5127,mm2:33.6},
+  {label:'1 AWG',  amp:130, rPerKm:0.4066,mm2:42.4},
+  {label:'1/0 AWG',amp:150, rPerKm:0.3224,mm2:53.5},
+  {label:'2/0 AWG',amp:175, rPerKm:0.2557,mm2:67.4},
+  {label:'3/0 AWG',amp:200, rPerKm:0.2028,mm2:85.0},
+  {label:'4/0 AWG',amp:230, rPerKm:0.1608,mm2:107},
+  {label:'250 kcmil',amp:255,rPerKm:0.1360,mm2:127},
+  {label:'300 kcmil',amp:285,rPerKm:0.1133,mm2:152},
+  {label:'350 kcmil',amp:310,rPerKm:0.0971,mm2:177},
+  {label:'400 kcmil',amp:335,rPerKm:0.0848,mm2:203},
+  {label:'500 kcmil',amp:380,rPerKm:0.0686,mm2:253}
+];
+const AL_DERATE = 0.78; // factor aproximado ampacidad aluminio vs cobre, mismo calibre nominal
+const RHO_CU = 0.0178;  // Ohm*mm2/m, resistividad cobre ~20°C (valor práctico)
+
+const TIPOS_DEFAULT = [
+  {nombre:'Fuerza',         fp:0.90, fases:1, fd:100, breaker:20},
+  {nombre:'Alumbrado',      fp:1.00, fases:1, fd:100, breaker:16},
+  {nombre:'Tomacorrientes', fp:1.00, fases:1, fd:100, breaker:20},
+  {nombre:'Control',        fp:1.00, fases:1, fd:100, breaker:10},
+  {nombre:'Climatización',  fp:0.85, fases:1, fd:100, breaker:32},
+  {nombre:'Respaldo/UPS',   fp:0.95, fases:1, fd:100, breaker:16}
+];
+
+const SISTEMAS = {
+  cl:        {vfase:220, vlinea:380, hz:50, calibre:'mm2', serie:'iec'},
+  us120:     {vfase:120, vlinea:208, hz:60, calibre:'awg', serie:'nema'},
+  us120_240: {vfase:120, vlinea:240, hz:60, calibre:'awg', serie:'nema'},
+  eu230:     {vfase:230, vlinea:400, hz:50, calibre:'mm2', serie:'iec'}
+};
+
+const EJEMPLO_CARGAS = [
+  ['Fuerza','Aire Acondicionado','Sala Monitoreo','24.000 BTU',1,7030],
+  ['Fuerza','Pantallas Monitoreo','Planta Alta','55"',6,160],
+  ['Fuerza','Pantallas Monitoreo','Planta Baja','55"',6,160],
+  ['Fuerza','Estación de Trabajo','Operadores','AIO 22"',4,180],
+  ['Fuerza','Estación de Trabajo','Jefe Sala Monitoreo','AIO 22"',1,180],
+  ['Fuerza','Decoder Video Wall','Pantallas Monitoreo','16 Ch',1,100],
+  ['Fuerza','NVR Storage Sala','Sistema de Grabación Local','17 Ch',2,250],
+  ['Fuerza','Switch de Datos','Conmutación Local','24 ch',2,60],
+  ['Fuerza','UPS Respaldo Rack','Sala Monitoreo','2 kVA',1,50],
+  ['Fuerza','UPS Respaldo Rack','Operadores','0,6 kVA',5,30],
+  ['Alumbrado','Barra Led Perimetral','Sala Monitoreo','Equipo Led',1,120],
+  ['Alumbrado','Alumbrado General 1','Sala Monitoreo','Equipo Led',2,40],
+  ['Alumbrado','Alumbrado General 2','Sala Monitoreo','Equipo Led',2,40],
+  ['Control','Tablero Transferencia','Sala de Monitoreo','Grupo Generador',1,30]
+];
+
+/* ========================= ESTADO ========================= */
+
+const DEFAULT_PROYECTO = {nombre:'',cliente:'',ubicacion:'',fecha:'',responsable:'',ref:'',
+  sistema:'cl', vfase:220, vlinea:380, hz:50, alimFases:3,
+  calibre:'mm2', material:'cu', serie:'iec',
+  cmaxRamal:3, cmaxTotal:5, util:0.8, umbral:1500, longAlim:null,
+  tableroNombre:'TD-1', tableroPolos:null,
+  genHabilitado:true, genKva:10, genFases:1,
+  upsHabilitado:true, upsKva:2, upsAlimenta:'Cargas críticas (rack / sala de monitoreo)', upsCircuito:null};
+
+let state = {
+  proyecto: Object.assign({}, DEFAULT_PROYECTO),
+  tipos: JSON.parse(JSON.stringify(TIPOS_DEFAULT)),
+  cargas: []
+};
+// Rellena con los valores por defecto cualquier campo que falte en un estado
+// cargado (autoguardado viejo o .json importado de antes de agregar una opción
+// nueva), sin pisar lo que el usuario ya haya configurado.
+function completarProyecto(p){
+  return Object.assign({}, DEFAULT_PROYECTO, p||{});
+}
+let idSeq = 1;
+function nextId(){ return 'c' + (idSeq++); }
+
+/* ========================= UTILIDADES ========================= */
+
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+const nf0 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:0});
+const nf1 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:1,minimumFractionDigits:0});
+const nf2 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:2,minimumFractionDigits:0});
+function fmt(n,d){ if(n==null||isNaN(n)) return '—'; return d===2?nf2.format(n):d===1?nf1.format(n):nf0.format(n); }
+
+function wireTable(){ return state.proyecto.calibre==='mm2' ? WIRE_MM2 : WIRE_AWG; }
+function breakerSeries(){ return BREAKER_SERIES[state.proyecto.serie] || BREAKER_SERIES.iec; }
+
+function ampacityOf(row){
+  const base = row.amp;
+  return state.proyecto.material==='al' ? base*AL_DERATE : base;
+}
+function pickConductorForAmpacity(current){
+  const table = wireTable();
+  for(const row of table){ if(ampacityOf(row) >= current) return row; }
+  return table[table.length-1];
+}
+function pickBreaker(current){
+  const series = breakerSeries();
+  for(const b of series){ if(b >= current) return b; }
+  return series[series.length-1];
+}
+function resistanciaPorMetro(row){
+  // Ohm/m. mm2: R' = rho(Ohm*mm2/m) / S(mm2). awg: la tabla trae Ohm/km -> Ohm/m.
+  if(state.proyecto.calibre==='mm2') return RHO_CU/row.mm2;
+  return row.rPerKm/1000;
+}
+function caidaTensionPct(current, lengthM, fases, vRef, row){
+  if(!lengthM || lengthM<=0 || !row) return null;
+  const rPerM = resistanciaPorMetro(row);
+  const factor = fases===3 ? Math.sqrt(3) : 2;
+  const dV = factor*current*lengthM*rPerM;
+  return (dV/vRef)*100;
+}
+function dimensionarCircuito(current, fases, lengthM, vRef, limitePct){
+  const breaker = pickBreaker(current);
+  let conductor = pickConductorForAmpacity(Math.max(current,breaker));
+  let cdt = caidaTensionPct(current,lengthM,fases,vRef,conductor);
+  const table = wireTable();
+  let idx = table.indexOf(conductor);
+  const limite = lengthM ? (limitePct!=null?limitePct:state.proyecto.cmaxRamal) : null;
+  while(limite!=null && cdt!=null && cdt>limite && idx<table.length-1){
+    idx++; conductor = table[idx];
+    cdt = caidaTensionPct(current,lengthM,fases,vRef,conductor);
+  }
+  return {breaker, conductor, cdt};
+}
+
+function tipoOf(nombre){
+  return state.tipos.find(t=>t.nombre===nombre) || state.tipos[0];
+}
+
+/* ========================= CÁLCULO ========================= */
+
+function calcCarga(c){
+  const potTotalW = (Number(c.cantidad)||0) * (Number(c.potUnit)||0);
+  const fp = Number(c.fp)||1;
+  const potVA = fp>0 ? potTotalW/fp : potTotalW;
+  const vref = c.fases===3 ? state.proyecto.vlinea : state.proyecto.vfase;
+  let corriente;
+  if(c.fases===3){ corriente = potVA/(Math.sqrt(3)*state.proyecto.vlinea); }
+  else { corriente = potVA/state.proyecto.vfase; }
+  const corrienteDiseno = corriente * (c.continua ? 1.25 : 1.0);
+  return {potTotalW, potVA, corriente, corrienteDiseno, vref};
+}
+
+function calcularTodo(){
+  const cargasCalc = state.cargas.map(c=>Object.assign({}, c, {_calc: calcCarga(c)}));
+
+  // resumen por tipo
+  const porTipo = {};
+  state.tipos.forEach(t=> porTipo[t.nombre] = {nombre:t.nombre, pW:0, pVA:0, fd:t.fd});
+  cargasCalc.forEach(c=>{
+    if(!porTipo[c.tipo]) porTipo[c.tipo] = {nombre:c.tipo, pW:0, pVA:0, fd:100};
+    porTipo[c.tipo].pW += c._calc.potTotalW;
+    porTipo[c.tipo].pVA += c._calc.potVA;
+  });
+  const resumen = Object.values(porTipo);
+  resumen.forEach(r=>{ r.demW = r.pW*(r.fd/100); r.demVA = r.pVA*(r.fd/100); });
+
+  const totalPW = resumen.reduce((s,r)=>s+r.pW,0);
+  const totalPVA = resumen.reduce((s,r)=>s+r.pVA,0);
+  const totalDemW = resumen.reduce((s,r)=>s+r.demW,0);
+  const totalDemVA = resumen.reduce((s,r)=>s+r.demVA,0);
+
+  // potencia respaldada por generador/UPS (excluye cargas marcadas como no respaldadas, ej. A/A)
+  const respaldadas = cargasCalc.filter(c=>c.respaldado!==false);
+  const excluidas = cargasCalc.filter(c=>c.respaldado===false);
+  const respaldoW = respaldadas.reduce((s,c)=>s+c._calc.potTotalW,0);
+  const respaldoVA = respaldadas.reduce((s,c)=>s+c._calc.potVA,0);
+  const excluidoW = excluidas.reduce((s,c)=>s+c._calc.potTotalW,0);
+
+  const alimFases = Number(state.proyecto.alimFases)||3;
+  const vrefAlim = alimFases===3 ? state.proyecto.vlinea : state.proyecto.vfase;
+  const iTotal = alimFases===3 ? totalDemVA/(Math.sqrt(3)*state.proyecto.vlinea) : totalDemVA/state.proyecto.vfase;
+  const dimAlim = dimensionarCircuito(iTotal, alimFases, state.proyecto.longAlim, vrefAlim, state.proyecto.cmaxTotal);
+
+  // generación de circuitos: agrupar por tipo+fases, separar dedicados
+  const grupos = {};
+  cargasCalc.forEach(c=>{
+    const t = tipoOf(c.tipo);
+    const esDedicado = !!c.dedicado;
+    const key = c.tipo+'|'+c.fases+'|'+(c.respaldado!==false?'respaldo':'solo-red');
+    if(!grupos[key]) grupos[key] = {tipo:c.tipo, fases:c.fases, breakerObjetivo:(t?t.breaker:20), items:[]};
+    grupos[key].items.push(c);
+  });
+
+  let circuitos = [];
+  let numCirc = 1;
+  Object.values(grupos).forEach(g=>{
+    const vref = g.fases===3 ? state.proyecto.vlinea : state.proyecto.vfase;
+    const cap = g.breakerObjetivo * state.proyecto.util;
+    const dedicadas = g.items.filter(c=>c.dedicado);
+    const agrupables = g.items.filter(c=>!c.dedicado).sort((a,b)=>b._calc.corrienteDiseno - a._calc.corrienteDiseno);
+
+    dedicadas.forEach(c=>{
+      const i = c._calc.corrienteDiseno;
+      const long = c.longitud || null;
+      const dim = dimensionarCircuito(i, g.fases, long, vref);
+      circuitos.push(buildCircuito(numCirc++, g.tipo, g.fases, [c], i, dim, long, vref, true));
+    });
+
+    // bin packing first-fit-decreasing
+    const bins = [];
+    agrupables.forEach(c=>{
+      const i = c._calc.corrienteDiseno;
+      let placed=false;
+      for(const b of bins){
+        if(b.items.length>0 && (b.total+i)<=cap){ b.items.push(c); b.total+=i; placed=true; break; }
+      }
+      if(!placed) bins.push({items:[c], total:i});
+    });
+    bins.forEach(b=>{
+      const i = b.total;
+      const long = b.items.reduce((m,c)=> Math.max(m, c.longitud||0), 0) || null;
+      const dim = dimensionarCircuito(i, g.fases, long, vref);
+      circuitos.push(buildCircuito(numCirc++, g.tipo, g.fases, b.items, i, dim, long, vref, false));
+    });
+  });
+
+  return {cargasCalc, resumen, totalPW, totalPVA, totalDemW, totalDemVA, iTotal, dimAlim, alimFases, vrefAlim, circuitos,
+    respaldoW, respaldoVA, excluidoW};
+}
+
+function buildCircuito(n, tipo, fases, items, iDiseno, dim, long, vref, dedicado){
+  const pctUso = dim.breaker>0 ? (iDiseno/dim.breaker)*100 : 0;
+  const avisos = [];
+  if(pctUso>100) avisos.push('Corriente de diseño supera el breaker asignado — revisar');
+  if(dim.cdt!=null && dim.cdt>state.proyecto.cmaxRamal) avisos.push('Caída de tensión estimada excede el máximo del circuito ramal ('+state.proyecto.cmaxRamal+'%)');
+  return {
+    n, tipo, fases, items, iDiseno,
+    breaker: dim.breaker, conductor: dim.conductor, cdt: dim.cdt,
+    long, vref, pctUso, dedicado, avisos
+  };
+}
+
+/* ========================= RENDER ========================= */
+
+function render(){
+  renderStats();
+  renderTipos();
+  renderCargas();
+  renderResultados();
+  renderDiagrama();
+  renderTablero(); renderTableroDibujo(); renderUpsCircuitoSelect(tableroLayout());
+  document.getElementById('tab-n-cargas').textContent = state.cargas.length;
+  saveLocal();
+}
+
+// Actualización liviana: recalcula totales y resultados SIN reconstruir las
+// tablas editables (cargas/tipos), para no perder el foco mientras se escribe.
+// El diagrama es de solo lectura (no tiene <input>), así que se puede
+// reconstruir siempre sin riesgo de perder el foco.
+function renderDerived(){
+  renderStats();
+  renderFooterCargas();
+  renderResultados();
+  renderDiagrama();
+  renderTablero(); renderTableroDibujo(); renderUpsCircuitoSelect(tableroLayout());
+  document.getElementById('tab-n-cargas').textContent = state.cargas.length;
+  saveLocal();
+}
+
+function renderFooterCargas(){
+  let sumaPW=0, sumaI=0;
+  state.cargas.forEach(c=>{ const calc = calcCarga(c); sumaPW += calc.potTotalW; sumaI += calc.corriente; });
+  document.getElementById('tot-pw').textContent = fmt(sumaPW,0);
+  document.getElementById('tot-i').textContent = fmt(sumaI,2);
+}
+
+// Actualiza solo las celdas calculadas (Potencia total / Corriente) de una fila,
+// sin tocar los <input> — así el cursor no se mueve mientras el usuario escribe.
+function patchCargaRow(c){
+  const tr = document.querySelector('#cargas-body tr[data-row="'+c.id+'"]');
+  if(!tr) return;
+  const calc = calcCarga(c);
+  const cells = tr.children;
+  if(cells[6]) cells[6].textContent = fmt(calc.potTotalW,0);
+  if(cells[13]) cells[13].textContent = fmt(calc.corriente,2);
+}
+
+function pillUso(pct){
+  if(pct>100) return '<span class="pill bad"><span class="dot"></span>'+fmt(pct,0)+'%</span>';
+  if(pct>90) return '<span class="pill warn"><span class="dot"></span>'+fmt(pct,0)+'%</span>';
+  return '<span class="pill good"><span class="dot"></span>'+fmt(pct,0)+'%</span>';
+}
+function pillCdt(cdt,max){
+  if(cdt==null) return '<span class="pill neutral">—</span>';
+  if(cdt>max) return '<span class="pill bad"><span class="dot"></span>'+fmt(cdt,2)+'%</span>';
+  return '<span class="pill good"><span class="dot"></span>'+fmt(cdt,2)+'%</span>';
+}
+
+function truncar(s,n){
+  s = String(s||'');
+  return s.length>n ? s.slice(0,n-1)+'…' : s;
+}
+function colorCircuito(c){
+  if(c.avisos && c.avisos.length) return 'var(--bad)';
+  if(c.pctUso>90) return 'var(--warn)';
+  return 'var(--accent2)';
+}
+// Símbolo simplificado de protección (no es simbología normalizada IEC/NEC,
+// es un marcador reconocible de "aquí hay un breaker" para un esquema de apoyo.
+function breakerSymbolSVG(cx, cy, color, big){
+  const w = big?30:24, h = big?24:18;
+  const x = cx - w/2, y = cy - h/2;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="fill:var(--surface);stroke:${color};stroke-width:1.8"/>`
+       + `<line x1="${x+4}" y1="${y+h-3}" x2="${x+w-4}" y2="${y+3}" style="stroke:${color};stroke-width:1.8"/>`;
+}
+
+function escenaUnifilar(){ return EnergiaCAD.buildUnifilar(state, calcularTodo(), tableroLayout()); }
+function escenaTablero(){ return EnergiaCAD.buildTablero(state, calcularTodo(), tableroLayout()); }
+function renderDiagrama(){ montarPlano('diagrama-wrap', escenaUnifilar()); }
+function diagramaToDXF(){ return EnergiaCAD.toDXF(escenaUnifilar()); }
+
+function polosAuto(nCircuitos){
+  let n = Math.max(nCircuitos, 6);
+  if(n%2) n++;
+  return n;
+}
+
+// Lógica única de asignación de polos — la comparten el dibujo del tablero y
+// el directorio de circuitos, para que nunca queden desincronizados.
+function tableroLayout(){
+  const r = calcularTodo();
+  const n = r.circuitos.length;
+  const auto = polosAuto(n);
+  const userPolos = state.proyecto.tableroPolos;
+  const polos = (userPolos!=null && userPolos>=2) ? userPolos : auto;
+  const insuficiente = polos < n;
+  const total = Math.max(polos, n);
+  const byN = {};
+  r.circuitos.forEach(c=> byN[c.n] = c);
+  const left = [], right = [];
+  for(let s=1; s<=total; s++){ (s%2===1 ? left : right).push(s); }
+  function fase(slot){ return r.alimFases===3 ? ['L1','L2','L3'][(slot-1)%3] : 'L1'; }
+
+  // Qué circuito real alimenta al UPS: el que el usuario eligió si sigue existiendo,
+  // sino el primer circuito de tipo "Respaldo/UPS", sino el primer circuito respaldado.
+  let upsSlot = null;
+  if(r.circuitos.length){
+    const elegido = r.circuitos.find(c=>c.n===state.proyecto.upsCircuito);
+    const porTipo = r.circuitos.find(c=>c.tipo==='Respaldo/UPS');
+    const porRespaldo = r.circuitos.find(c=>c.items.some(x=>x.respaldado!==false));
+    const resuelto = elegido || porTipo || porRespaldo || r.circuitos[0];
+    upsSlot = resuelto.n;
+    state.proyecto.upsCircuito = upsSlot; // persiste la elección resuelta
+  }
+
+  return {r, n, polos, total, insuficiente, byN, left, right, fase, upsSlot};
+}
+
+function renderUpsCircuitoSelect(L){
+  const sel = document.getElementById('p-ups-circuito');
+  if(!sel) return;
+  if(!L.r.circuitos.length){ sel.innerHTML = '<option value="">— sin circuitos —</option>'; return; }
+  sel.innerHTML = L.r.circuitos.map(c=>{
+    const desc = truncar(c.items.map(x=>x.tag).join(', '), 28);
+    return `<option value="${c.n}" ${c.n===L.upsSlot?'selected':''}>C${c.n} · ${esc(c.tipo)} — ${esc(desc)}</option>`;
+  }).join('');
+}
+
+function renderTablero(){
+  const wrap = document.getElementById('tablero-wrap');
+  const avisoBox = document.getElementById('tablero-aviso');
+  if(!wrap) return;
+  const L = tableroLayout();
+
+  if(avisoBox){
+    avisoBox.innerHTML = L.insuficiente
+      ? `<p class="disclaimer" style="border-color:var(--bad); color:var(--bad); margin-bottom:12px;"><b>⚠ Tablero insuficiente:</b> se generaron ${L.n} circuitos y el tablero tiene ${L.polos} polos definidos. Aumente el N° de polos en «Proyecto» o revise el cuadro de circuitos.</p>`
+      : '';
+  }
+
+  function slotHTML(slot){
+    const c = L.byN[slot];
+    if(!c){
+      return `<div class="slot reserve"><div class="slot-num">${slot}</div><div class="slot-body"><span class="slot-desc">Reserva</span></div></div>`;
+    }
+    const estado = c.avisos.length ? 'bad' : (c.pctUso>90 ? 'warn' : '');
+    const items = c.items.map(x=>x.tag).filter((v,ix,a)=>a.indexOf(v)===ix).join(', ');
+    const f = L.r.alimFases===3 ? L.fase(slot) : null;
+    return `<div class="slot ${estado}">
+      <div class="slot-num">${slot}</div>
+      <div class="slot-body">
+        <div class="slot-top">
+          <span class="slot-breaker">${fmt(c.breaker,0)} A</span>
+          ${f?`<span class="slot-phase">${f}</span>`:''}
+          <span class="slot-phase">${esc(c.conductor.label)}</span>
+        </div>
+        <div class="slot-desc">${esc(c.tipo)}${c.dedicado?' · dedicado':''} — ${esc(truncar(items,40))}</div>
+      </div>
+    </div>`;
+  }
+
+  wrap.innerHTML = `<div class="panelboard">
+    <div class="panelboard-head">${esc(state.proyecto.tableroNombre||'TD-1')}${state.proyecto.nombre?(' · '+esc(state.proyecto.nombre)):''}</div>
+    <div class="panelboard-main">PRINCIPAL ${fmt(L.r.dimAlim.breaker,0)} A · ${esc(L.r.dimAlim.conductor.label)} · ${L.r.alimFases===3?'Trifásico':'Monofásico'} · ${L.total} polos</div>
+    <div class="panelboard-cols">
+      <div class="panelboard-col">${L.left.map(slotHTML).join('')}</div>
+      <div class="panelboard-col">${L.right.map(slotHTML).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function renderTableroDibujo(){ montarPlano('tablero-dibujo-wrap', escenaTablero()); }
+function tableroToDXF(){ return EnergiaCAD.toDXF(escenaTablero()); }
+
+function renderStats(){
+  const r = calcularTodo();
+  const el = document.getElementById('statstrip');
+  el.innerHTML = [
+    stat('Potencia instalada', fmt(r.totalPW/1000,2), 'kW'),
+    stat('Demanda estimada', fmt(r.totalDemW/1000,2), 'kW'),
+    stat('Corriente alimentador', fmt(r.iTotal,1), 'A'),
+    stat('Breaker principal', fmt(r.dimAlim.breaker,0), 'A'),
+    stat('Conductor alimentador', r.dimAlim.conductor.label, ''),
+    stat('Circuitos generados', fmt(r.circuitos.length,0), '')
+  ].join('');
+}
+function stat(lbl,val,unit){
+  return '<div class="stat"><div class="lbl">'+esc(lbl)+'</div><div class="val">'+esc(val)+(unit?' <small>'+esc(unit)+'</small>':'')+'</div></div>';
+}
+
+function renderTipos(){
+  const body = document.getElementById('tipos-body');
+  body.innerHTML = state.tipos.map((t,i)=>`
+    <tr>
+      <td><input data-ttipo="nombre" data-i="${i}" type="text" value="${esc(t.nombre)}"></td>
+      <td class="num"><input data-ttipo="fp" data-i="${i}" type="number" step="0.01" min="0.1" max="1" value="${t.fp}"></td>
+      <td class="num">
+        <select data-ttipo="fases" data-i="${i}"><option value="1" ${t.fases===1?'selected':''}>1</option><option value="3" ${t.fases===3?'selected':''}>3</option></select>
+      </td>
+      <td class="num"><input data-ttipo="fd" data-i="${i}" type="number" step="1" min="0" max="100" value="${t.fd}"></td>
+      <td class="num"><input data-ttipo="breaker" data-i="${i}" type="number" step="1" min="1" value="${t.breaker}"></td>
+      <td><button class="btn small danger" data-del-tipo="${i}" title="Eliminar tipo">✕</button></td>
+    </tr>`).join('');
+}
+
+function renderCargas(){
+  const body = document.getElementById('cargas-body');
+  const opcionesTipo = state.tipos.map(t=>`<option value="${esc(t.nombre)}">${esc(t.nombre)}</option>`).join('');
+  body.innerHTML = state.cargas.map(c=>{
+    const calc = calcCarga(c);
+    return `<tr data-row="${c.id}">
+      <td><select data-f="tipo">${opcionesTipo.replace('value="'+esc(c.tipo)+'"','value="'+esc(c.tipo)+'" selected')}</select></td>
+      <td><input data-f="tag" type="text" value="${esc(c.tag)}" placeholder="Equipo"></td>
+      <td><input data-f="lugar" type="text" value="${esc(c.lugar)}" placeholder="Lugar"></td>
+      <td><input data-f="caracteristicas" type="text" value="${esc(c.caracteristicas)}" placeholder="Características"></td>
+      <td class="num"><input data-f="cantidad" type="number" min="0" step="1" value="${c.cantidad}"></td>
+      <td class="num"><input data-f="potUnit" type="number" min="0" step="1" value="${c.potUnit}"></td>
+      <td class="num compact">${fmt(calc.potTotalW,0)}</td>
+      <td class="num"><input data-f="fp" type="number" min="0.1" max="1" step="0.01" value="${c.fp}"></td>
+      <td class="num"><select data-f="fases"><option value="1" ${c.fases===1?'selected':''}>1</option><option value="3" ${c.fases===3?'selected':''}>3</option></select></td>
+      <td style="text-align:center;"><input data-f="continua" type="checkbox" ${c.continua?'checked':''}></td>
+      <td style="text-align:center;"><input data-f="dedicado" type="checkbox" ${c.dedicado?'checked':''}></td>
+      <td style="text-align:center;"><input data-f="respaldado" type="checkbox" ${c.respaldado!==false?'checked':''}></td>
+      <td class="num"><input data-f="longitud" type="number" min="0" step="1" value="${c.longitud==null?'':c.longitud}" placeholder="—"></td>
+      <td class="num compact">${fmt(calc.corriente,2)}</td>
+      <td><button class="btn small danger" data-del-carga="${c.id}" title="Eliminar">✕</button></td>
+    </tr>`;
+  }).join('');
+  renderFooterCargas();
+
+  if(state.cargas.length===0){
+    document.getElementById('cargas-table').insertAdjacentHTML('afterend','<div class="empty" id="cargas-empty">Aún no hay cargas registradas.<br><button class="btn small primary" id="btn-add-carga-2">+ Agregar primera carga</button></div>');
+  } else {
+    const ex = document.getElementById('cargas-empty');
+    if(ex) ex.remove();
+  }
+}
+
+function renderResultados(){
+  const r = calcularTodo();
+
+  // resumen por tipo
+  document.getElementById('resumen-body').innerHTML = r.resumen.map(x=>`
+    <tr>
+      <td>${esc(x.nombre)}</td>
+      <td class="num">${fmt(x.pW,0)}</td>
+      <td class="num">${fmt(x.pVA,0)}</td>
+      <td class="num">${fmt(x.fd,0)}%</td>
+      <td class="num">${fmt(x.demW,0)}</td>
+      <td class="num">${fmt(x.demVA,0)}</td>
+    </tr>`).join('') + `
+    <tr style="font-weight:600; background:var(--surface-2);">
+      <td>TOTAL</td><td class="num">${fmt(r.totalPW,0)}</td><td class="num">${fmt(r.totalPVA,0)}</td><td></td>
+      <td class="num">${fmt(r.totalDemW,0)}</td><td class="num">${fmt(r.totalDemVA,0)}</td>
+    </tr>`;
+
+  // alimentador
+  document.getElementById('alimentador-box').innerHTML = `
+    <div class="grid cols-4">
+      <div class="stat"><div class="lbl">Corriente de diseño</div><div class="val">${fmt(r.iTotal,1)} <small>A</small></div></div>
+      <div class="stat"><div class="lbl">Breaker principal</div><div class="val">${fmt(r.dimAlim.breaker,0)} <small>A</small></div></div>
+      <div class="stat"><div class="lbl">Conductor sugerido</div><div class="val">${esc(r.dimAlim.conductor.label)}</div></div>
+      <div class="stat"><div class="lbl">Caída de tensión</div><div class="val">${r.dimAlim.cdt==null?'—':fmt(r.dimAlim.cdt,2)+'%'}</div></div>
+    </div>
+    <p class="hint" style="margin-top:12px; margin-bottom:0;">Alimentador ${r.alimFases===3?'trifásico':'monofásico'} a ${esc(r.vrefAlim)} V. ${state.proyecto.longAlim?('Calculado con '+state.proyecto.longAlim+' m de longitud.'):'Ingrese la longitud del alimentador en la pestaña «Proyecto» para estimar la caída de tensión.'}</p>`;
+
+  // circuitos
+  if(r.circuitos.length===0){
+    document.getElementById('circuitos-wrap').innerHTML = '<div class="empty">No hay circuitos que generar todavía — agregue cargas en la pestaña «Cargas».</div>';
+  } else {
+    document.getElementById('circuitos-wrap').innerHTML = `
+      <div class="tablewrap"><table>
+        <thead><tr>
+          <th>N°</th><th>Tipo</th><th>Descripción</th><th class="num">Fases</th>
+          <th class="num">I diseño (A)</th><th class="num">Breaker</th><th>Conductor</th>
+          <th class="num">% uso</th><th class="num">Caída tensión</th><th>Obs.</th>
+        </tr></thead>
+        <tbody>${r.circuitos.map(c=>`
+          <tr>
+            <td class="num compact">${c.n}</td>
+            <td>${esc(c.tipo)}${c.dedicado?' <span class="chip">dedicado</span>':''}</td>
+            <td title="${esc(c.items.map(i=>i.tag+' — '+i.lugar).join('; '))}">${esc(c.items.map(i=>i.tag).filter((v,i,a)=>a.indexOf(v)===i).join(', '))} ${c.items.length>1?'<span class="pill neutral">×'+c.items.length+'</span>':''}</td>
+            <td class="num">${c.fases}</td>
+            <td class="num">${fmt(c.iDiseno,2)}</td>
+            <td class="num compact">${fmt(c.breaker,0)} A</td>
+            <td class="compact">${esc(c.conductor.label)}</td>
+            <td class="num">${pillUso(c.pctUso)}</td>
+            <td class="num">${pillCdt(c.cdt, state.proyecto.cmaxRamal)}</td>
+            <td>${c.avisos.length?('<span class="pill bad">⚠ revisar</span>'):'<span class="pill good">ok</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+  }
+
+  // avisos globales
+  const avisos = [];
+  r.circuitos.forEach(c=>c.avisos.forEach(a=> avisos.push('Circuito N°'+c.n+' ('+c.tipo+'): '+a)) );
+  if(r.dimAlim.cdt!=null && r.dimAlim.cdt>state.proyecto.cmaxTotal) avisos.push('El alimentador principal excede la caída de tensión total máxima ('+state.proyecto.cmaxTotal+'%).');
+  if(state.cargas.length===0) avisos.push('Cargue cargas para obtener resultados.');
+  document.getElementById('avisos-box').innerHTML = avisos.length
+    ? '<ul style="margin:0; padding-left:20px;">'+avisos.map(a=>'<li style="margin-bottom:6px;">'+esc(a)+'</li>').join('')+'</ul>'
+    : '<p class="hint" style="margin:0;">Sin advertencias detectadas con los parámetros actuales.</p>';
+}
+
+/* ========================= ACCIONES ========================= */
+
+function addCarga(prefill){
+  const t = state.tipos[0];
+  const base = {
+    id: nextId(), tipo: t.nombre, tag:'', lugar:'', caracteristicas:'',
+    cantidad:1, potUnit:0, fp:t.fp, fases:t.fases, continua:false, dedicado:false, longitud:null, respaldado:true
+  };
+  const c = Object.assign(base, prefill||{});
+  if(prefill && prefill.potUnit!=null && prefill.cantidad!=null && base.dedicado===false && prefill.dedicado==null){
+    c.dedicado = (c.potUnit*c.cantidad) > state.proyecto.umbral;
+  }
+  state.cargas.push(c);
+  render();
+}
+
+function cargarEjemplo(){
+  state.cargas = [];
+  EJEMPLO_CARGAS.forEach(row=>{
+    const [tipo,tag,lugar,caract,cant,pot] = row;
+    const t = tipoOf(tipo);
+    const dedicado = (cant*pot) > state.proyecto.umbral;
+    const respaldado = tag !== 'Aire Acondicionado'; // el A/A queda fuera del respaldo de generador/UPS
+    state.cargas.push({id:nextId(), tipo, tag, lugar, caracteristicas:caract, cantidad:cant, potUnit:pot,
+      fp: t?t.fp:1, fases: t?t.fases:1, continua:false, dedicado, longitud:null, respaldado});
+  });
+  document.getElementById('p-nombre').value = 'Sala de Monitoreo El Tabo';
+  state.proyecto.nombre = 'Sala de Monitoreo El Tabo';
+  render();
+}
+
+function applySistema(key){
+  const s = SISTEMAS[key];
+  if(!s) return;
+  state.proyecto.sistema=key;
+  state.proyecto.vfase=s.vfase; state.proyecto.vlinea=s.vlinea; state.proyecto.hz=s.hz;
+  state.proyecto.calibre=s.calibre; state.proyecto.serie=s.serie;
+  syncProyectoInputs();
+  render();
+}
+
+function syncProyectoInputs(){
+  const p = state.proyecto;
+  document.getElementById('p-nombre').value = p.nombre;
+  document.getElementById('p-cliente').value = p.cliente;
+  document.getElementById('p-ubicacion').value = p.ubicacion;
+  document.getElementById('p-fecha').value = p.fecha;
+  document.getElementById('p-responsable').value = p.responsable;
+  document.getElementById('p-ref').value = p.ref;
+  document.getElementById('p-sistema').value = p.sistema;
+  document.getElementById('p-vfase').value = p.vfase;
+  document.getElementById('p-vlinea').value = p.vlinea;
+  document.getElementById('p-hz').value = p.hz;
+  document.getElementById('p-alim-fases').value = p.alimFases;
+  document.getElementById('p-calibre').value = p.calibre;
+  document.getElementById('p-material').value = p.material;
+  document.getElementById('p-serie').value = p.serie;
+  document.getElementById('p-cmax-ramal').value = p.cmaxRamal;
+  document.getElementById('p-cmax-total').value = p.cmaxTotal;
+  document.getElementById('p-util').value = p.util;
+  document.getElementById('p-umbral').value = p.umbral;
+  document.getElementById('p-long-alim').value = p.longAlim==null?'':p.longAlim;
+  document.getElementById('p-tablero-nombre').value = p.tableroNombre;
+  document.getElementById('p-tablero-polos').value = p.tableroPolos==null?'':p.tableroPolos;
+  document.getElementById('p-gen-hab').checked = !!p.genHabilitado;
+  document.getElementById('p-gen-kva').value = p.genKva;
+  document.getElementById('p-gen-fases').value = p.genFases;
+  document.getElementById('p-ups-hab').checked = !!p.upsHabilitado;
+  document.getElementById('p-ups-kva').value = p.upsKva;
+  document.getElementById('p-ups-alimenta').value = p.upsAlimenta;
+}
+
+function exportCSV(){
+  const r = calcularTodo();
+  let rows = [['N°','Tipo','Descripcion','Fases','I_diseno_A','Breaker_A','Conductor','Pct_uso','Caida_tension_pct','Observaciones']];
+  r.circuitos.forEach(c=>{
+    rows.push([c.n, c.tipo, c.items.map(i=>i.tag).join(' + '), c.fases, c.iDiseno.toFixed(2), c.breaker, c.conductor.label, c.pctUso.toFixed(1), c.cdt==null?'':c.cdt.toFixed(2), c.avisos.join(' | ')]);
+  });
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  downloadBlob(csv, 'text/csv;charset=utf-8', (state.proyecto.nombre||'circuitos')+'.csv');
+}
+function exportJSON(){
+  downloadBlob(JSON.stringify(state,null,2), 'application/json', (state.proyecto.nombre||'proyecto')+'.json');
+}
+function downloadBlob(content, type, filename){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+
+function saveLocal(){
+  try{ localStorage.setItem('calc-electrico-autosave', JSON.stringify(state)); }catch(e){}
+}
+function loadLocal(){
+  try{
+    const raw = localStorage.getItem('calc-electrico-autosave');
+    if(raw){ const s = JSON.parse(raw); if(s && s.proyecto && s.tipos && s.cargas){ state = s;
+      state.proyecto = completarProyecto(state.proyecto);
+      let maxId=0; state.cargas.forEach(c=>{ const n=parseInt((c.id||'c0').slice(1)); if(n>maxId) maxId=n; });
+      idSeq = maxId+1; return true; } }
+  }catch(e){}
+  return false;
+}
+
+/* ========================= EVENTOS ========================= */
+
+document.getElementById('tabs').addEventListener('click', e=>{
+  const btn = e.target.closest('.tab-btn'); if(!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  requestAnimationFrame(()=>document.querySelectorAll('.panel.active .cad-viewport').forEach(el=>{const v=vistasCAD.get(el.id);if(v&&v.fit)ajustarPlano(el.id,v.fit);}));
+});
+
+document.getElementById('p-sistema').addEventListener('change', e=>{
+  if(e.target.value==='custom'){ state.proyecto.sistema='custom'; return; }
+  applySistema(e.target.value);
+});
+['p-nombre','p-cliente','p-ubicacion','p-fecha','p-responsable','p-ref','p-tablero-nombre','p-ups-alimenta'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const key = {'p-nombre':'nombre','p-cliente':'cliente','p-ubicacion':'ubicacion','p-fecha':'fecha','p-responsable':'responsable','p-ref':'ref','p-tablero-nombre':'tableroNombre','p-ups-alimenta':'upsAlimenta'}[id];
+    state.proyecto[key] = e.target.value; renderDerived();
+  });
+});
+document.getElementById('p-gen-hab').addEventListener('change', e=>{ state.proyecto.genHabilitado = e.target.checked; renderDerived(); });
+document.getElementById('p-ups-hab').addEventListener('change', e=>{ state.proyecto.upsHabilitado = e.target.checked; renderDerived(); });
+document.getElementById('p-gen-fases').addEventListener('change', e=>{ state.proyecto.genFases = Number(e.target.value); renderDerived(); });
+document.getElementById('p-ups-circuito').addEventListener('change', e=>{ state.proyecto.upsCircuito = Number(e.target.value); renderDerived(); });
+const numericFieldMap = {
+  'p-vfase':'vfase','p-vlinea':'vlinea','p-hz':'hz','p-cmax-ramal':'cmaxRamal','p-cmax-total':'cmaxTotal',
+  'p-util':'util','p-umbral':'umbral','p-long-alim':'longAlim','p-tablero-polos':'tableroPolos',
+  'p-gen-kva':'genKva','p-ups-kva':'upsKva'
+};
+const CRITICOS = ['p-vfase','p-vlinea','p-hz']; // nunca deben quedar en 0/null: romperían las divisiones
+Object.keys(numericFieldMap).forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const key = numericFieldMap[id];
+    if(e.target.value===''){
+      if(CRITICOS.includes(id)) return; // esperar a que ingrese un valor válido antes de recalcular
+      state.proyecto[key] = null;
+    } else {
+      const n = Number(e.target.value);
+      if(CRITICOS.includes(id) && (!n || n<=0)) return;
+      state.proyecto[key] = n;
+    }
+    render();
+  });
+});
+document.getElementById('p-alim-fases').addEventListener('change', e=>{ state.proyecto.alimFases = Number(e.target.value); render(); });
+document.getElementById('p-calibre').addEventListener('change', e=>{ state.proyecto.calibre = e.target.value; render(); });
+document.getElementById('p-material').addEventListener('change', e=>{ state.proyecto.material = e.target.value; render(); });
+document.getElementById('p-serie').addEventListener('change', e=>{ state.proyecto.serie = e.target.value; render(); });
+
+document.getElementById('btn-add-tipo').addEventListener('click', ()=>{
+  state.tipos.push({nombre:'Nuevo tipo '+(state.tipos.length+1), fp:1, fases:1, fd:100, breaker:20});
+  render();
+});
+function handleTipoInput(e){
+  const i = e.target.dataset.i, f = e.target.dataset.ttipo;
+  if(i==null) return;
+  const t = state.tipos[i];
+  if(f==='nombre'){ const old=t.nombre; t.nombre=e.target.value; state.cargas.forEach(c=>{ if(c.tipo===old) c.tipo=t.nombre; }); }
+  else if(f==='fases') t.fases = Number(e.target.value);
+  else t[f] = Number(e.target.value);
+}
+// Mientras se escribe: solo recalcular resultados (no reconstruir la tabla, para no perder el foco).
+document.getElementById('tipos-body').addEventListener('input', e=>{ handleTipoInput(e); renderDerived(); });
+// Al confirmar el cambio (blur / selección): reconstruir tablas para sincronizar
+// los <select> de "Cargas" con el nombre/orden final de los tipos.
+document.getElementById('tipos-body').addEventListener('change', ()=> render());
+document.getElementById('tipos-body').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-del-tipo]'); if(!btn) return;
+  if(state.tipos.length<=1){ alert('Debe quedar al menos un tipo de circuito.'); return; }
+  state.tipos.splice(Number(btn.dataset.delTipo),1);
+  render();
+});
+
+document.getElementById('btn-add-carga').addEventListener('click', ()=>addCarga());
+document.getElementById('panel-cargas').addEventListener('click', e=>{
+  if(e.target.id==='btn-add-carga-2') addCarga();
+});
+document.getElementById('btn-ejemplo').addEventListener('click', ()=>{
+  if(state.cargas.length && !confirm('Esto reemplazará el listado actual de cargas por el ejemplo. ¿Continuar?')) return;
+  cargarEjemplo();
+});
+document.getElementById('btn-vaciar').addEventListener('click', ()=>{
+  if(state.cargas.length && !confirm('¿Vaciar todas las cargas del listado?')) return;
+  state.cargas = []; render();
+});
+
+function handleCargaInput(e){
+  const tr = e.target.closest('tr[data-row]'); if(!tr) return null;
+  const id = tr.dataset.row; const c = state.cargas.find(x=>x.id===id); if(!c) return null;
+  const f = e.target.dataset.f; if(!f) return null;
+  if(f==='tipo') c.tipo = e.target.value;
+  else if(f==='tag') c.tag = e.target.value;
+  else if(f==='lugar') c.lugar = e.target.value;
+  else if(f==='caracteristicas') c.caracteristicas = e.target.value;
+  else if(f==='cantidad') c.cantidad = Number(e.target.value)||0;
+  else if(f==='potUnit') c.potUnit = Number(e.target.value)||0;
+  else if(f==='fp') c.fp = Number(e.target.value)||1;
+  else if(f==='fases') c.fases = Number(e.target.value);
+  else if(f==='continua') c.continua = e.target.checked;
+  else if(f==='dedicado') c.dedicado = e.target.checked;
+  else if(f==='respaldado') c.respaldado = e.target.checked;
+  else if(f==='longitud') c.longitud = e.target.value===''? null : Number(e.target.value);
+  return c;
+}
+// Mientras se escribe: actualizar solo las celdas calculadas de esa fila y los
+// totales/resultados — nunca reconstruir los <input>, para no perder el foco.
+document.getElementById('cargas-body').addEventListener('input', e=>{
+  const c = handleCargaInput(e); if(!c) return;
+  patchCargaRow(c); renderDerived();
+});
+// Al confirmar el cambio (blur en texto/número, o selección en select/checkbox):
+// reconstruir la tabla completa para que quede 100% consistente.
+document.getElementById('cargas-body').addEventListener('change', ()=> render());
+document.getElementById('cargas-body').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-del-carga]'); if(!btn) return;
+  state.cargas = state.cargas.filter(c=>c.id!==btn.dataset.delCarga);
+  render();
+});
+
+document.getElementById('btn-print').addEventListener('click', ()=>window.print());
+document.getElementById('btn-print-2').addEventListener('click', ()=>window.print());
+document.getElementById('btn-print-3').addEventListener('click', ()=>window.print());
+document.getElementById('btn-svg').addEventListener('click', ()=>{
+  const svgEl = document.querySelector('#diagrama-wrap svg');
+  if(!svgEl) return;
+  downloadBlob(EnergiaCAD.toSVG(escenaUnifilar()), 'image/svg+xml', (state.proyecto.nombre||'proyecto')+'-unifilar.svg');
+});
+document.getElementById('btn-dxf').addEventListener('click', ()=>{
+  downloadBlob(diagramaToDXF(), 'application/dxf', (state.proyecto.nombre||'proyecto')+'-unifilar.dxf');
+});
+document.getElementById('btn-svg-tablero').addEventListener('click', ()=>{
+  const svgEl = document.querySelector('#tablero-dibujo-wrap svg');
+  if(!svgEl) return;
+  downloadBlob(EnergiaCAD.toSVG(escenaTablero()), 'image/svg+xml', (state.proyecto.tableroNombre||'tablero')+'-componentes.svg');
+});
+document.getElementById('btn-dxf-tablero').addEventListener('click', ()=>{
+  downloadBlob(tableroToDXF(), 'application/dxf', (state.proyecto.tableroNombre||'tablero')+'.dxf');
+});
+document.getElementById('btn-csv').addEventListener('click', exportCSV);
+document.getElementById('btn-export-json').addEventListener('click', exportJSON);
+document.getElementById('input-json').addEventListener('change', e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    try{
+      const s = JSON.parse(ev.target.result);
+      if(s && s.proyecto && s.tipos && s.cargas){
+        state = s;
+        state.proyecto = completarProyecto(state.proyecto);
+        let maxId=0; state.cargas.forEach(c=>{ const n=parseInt((c.id||'c0').slice(1))||0; if(n>maxId) maxId=n; });
+        idSeq = maxId+1;
+        syncProyectoInputs(); render();
+      } else alert('El archivo no tiene el formato esperado.');
+    }catch(err){ alert('No se pudo leer el archivo: '+err.message); }
+  };
+  reader.readAsText(file);
+});
+
+/* ========================= VISOR CAD E IMPORTACIÓN ========================= */
+const vistasCAD = new Map();
+function escalaPlano(id, scale){
+  const v=vistasCAD.get(id), host=document.getElementById(id);
+  if(!v || !host)return;
+  v.scale=Math.min(4,Math.max(.04,scale));
+  const svg=host.querySelector('svg');
+  if(svg){svg.style.width=(v.scene.width*v.scale)+'px';svg.style.height=(v.scene.height*v.scale)+'px';}
+  const output=document.getElementById(id+'-scale');
+  if(output)output.textContent=Math.round(v.scale*100)+'%';
+}
+function ajustarPlano(id,mode="all"){
+  const v=vistasCAD.get(id), host=document.getElementById(id);
+  if(!v || !host || !host.clientWidth)return;
+  v.fit=mode;
+  escalaPlano(id,mode==="width"?(host.clientWidth-34)/v.scene.width:Math.min((host.clientWidth-34)/v.scene.width,(host.clientHeight-34)/v.scene.height));
+}
+function montarPlano(id,scene){
+  const host=document.getElementById(id);if(!host)return;
+  const previous=vistasCAD.get(id), scale=previous?previous.scale:1, fit=previous?previous.fit:"width";
+  vistasCAD.set(id,{scene,scale,fit});
+  host.classList.add('cad-viewport');host.setAttribute('tabindex','0');host.setAttribute('aria-label','Plano desplazable');
+  if(!document.getElementById(id+'-toolbar')){
+    const bar=document.createElement('div');bar.className='cad-toolbar no-print';bar.id=id+'-toolbar';
+    bar.innerHTML='<button class="btn small" data-view="width">Ajustar ancho</button><button class="btn small" data-view="fit">Ver plano completo</button><button class="btn small" data-view="out" aria-label="Alejar plano">−</button><output id="'+id+'-scale">100%</output><button class="btn small" data-view="in" aria-label="Acercar plano">+</button><button class="btn small" data-view="real">100%</button><span class="hint" style="margin:0">Desplácese para recorrer el detalle · DXF sin escala física</span>';
+    host.before(bar);
+    bar.addEventListener('click',e=>{
+      const button=e.target.closest('[data-view]');if(!button)return;
+      const v=vistasCAD.get(id), action=button.dataset.view;
+      if(action==='fit'||action==='width'){ajustarPlano(id,action==='width'?'width':'all');return;}
+      v.fit=false;escalaPlano(id,action==='real'?1:v.scale*(action==='in'?1.25:.8));
+    });
+  }
+  host.innerHTML=EnergiaCAD.toSVG(scene);
+  escalaPlano(id,scale);if(fit)requestAnimationFrame(()=>ajustarPlano(id,fit));
+}
+window.addEventListener('resize',()=>vistasCAD.forEach((v,id)=>{if(v.fit)ajustarPlano(id,v.fit);}));
+
+let excelBook=null, excelCargas=[], excelFileName='', excelReadSeq=0;
+function mostrarHojaExcel(){
+  excelCargas=[];
+  const apply=document.getElementById('excel-apply');apply.disabled=true;
+  const preview=document.getElementById('excel-preview');preview.innerHTML='';
+  try{
+    const name=document.getElementById('excel-sheet').value;
+    const rows=XLSX.utils.sheet_to_json(excelBook.Sheets[name],{header:1,defval:'',raw:true,range:0});
+    excelCargas=EnergiaCAD.parseRows(rows,name);
+    const total=excelCargas.reduce((sum,c)=>sum+c.cantidad*c.potUnit,0);
+    document.getElementById('excel-summary').textContent=excelFileName+' · '+name+' · '+excelCargas.length+' partidas · '+fmt(total,0)+' W. Revise antes de reemplazar el listado.';
+    preview.innerHTML='<table><thead><tr><th>Origen</th><th>Tipo</th><th>Equipo</th><th>Lugar</th><th>Cantidad</th><th>W unit.</th></tr></thead><tbody>'+excelCargas.map(c=>'<tr><td>'+esc(c.origen)+'</td><td>'+esc(c.tipo)+'</td><td>'+esc(c.tag)+'</td><td>'+esc(c.lugar)+'</td><td>'+esc(c.cantidad)+'</td><td>'+esc(c.potUnit)+'</td></tr>').join('')+'</tbody></table>';
+    apply.disabled=false;
+  }catch(err){document.getElementById('excel-summary').textContent=err.message;}
+}
+document.getElementById('input-excel').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file)return;
+  const seq=++excelReadSeq;
+  const box=document.getElementById('excel-import');box.hidden=false;
+  document.getElementById('excel-summary').textContent='Leyendo '+file.name+'…';
+  document.getElementById('excel-apply').disabled=true;
+  document.getElementById('excel-preview').innerHTML='';
+  document.getElementById('excel-sheet').innerHTML='';
+  try{
+    if(typeof XLSX==='undefined')throw new Error('No se encontró vendor/xlsx.full.min.js. Mantenga la carpeta vendor junto al HTML.');
+    const bytes=await file.arrayBuffer();if(seq!==excelReadSeq)return;
+    excelBook=XLSX.read(bytes,{type:'array'});excelFileName=file.name;
+    document.getElementById('excel-sheet').innerHTML=excelBook.SheetNames.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join('');
+    mostrarHojaExcel();
+  }catch(err){document.getElementById('excel-summary').textContent='No se pudo importar: '+err.message;}
+  e.target.value='';
+});
+document.getElementById('excel-sheet').addEventListener('change',mostrarHojaExcel);
+document.getElementById('excel-cancel').addEventListener('click',()=>{
+  ++excelReadSeq;excelCargas=[];excelBook=null;document.getElementById('excel-import').hidden=true;
+});
+document.getElementById('excel-apply').addEventListener('click',()=>{
+  if(!excelCargas.length)return;
+  state.cargas=excelCargas.map(row=>{
+    const t=tipoOf(row.tipo);
+    return Object.assign({},row,{id:nextId(),fp:t?t.fp:1,fases:t?t.fases:1,continua:false,
+      dedicado:row.cantidad*row.potUnit>state.proyecto.umbral,longitud:null,respaldado:true});
+  });
+  state.fuenteExcel={archivo:excelFileName,hoja:document.getElementById('excel-sheet').value};
+  if(!state.proyecto.nombre)state.proyecto.nombre=excelFileName.replace(/\.[^.]+$/,'');
+  syncProyectoInputs();render();
+  document.getElementById('excel-summary').textContent='Importadas '+state.cargas.length+' partidas. Revise FP, fases, respaldo y longitudes en el listado.';
+  document.getElementById('excel-apply').disabled=true;excelCargas=[];
+});
+
+/* ========================= INICIO ========================= */
+
+const restored = loadLocal();
+if(!state.proyecto.fecha) state.proyecto.fecha = new Date().toISOString().slice(0,10);
+syncProyectoInputs();
+if(!restored && state.cargas.length===0){
+  // deja listo el ejemplo real de la empresa como punto de partida
+  cargarEjemplo();
+} else {
+  render();
+}
+
+})();
+</script>
+</body>
+</html>

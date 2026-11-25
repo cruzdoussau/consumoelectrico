@@ -1,0 +1,74 @@
+CÁLCULO ELÉCTRICO Y PLANOS CAD
+
+Abrir index.html con Chrome o Edge. Mantener cad.js y la carpeta vendor junto
+al HTML. La importación y generación se ejecutan localmente en el navegador.
+Las tipografías externas son opcionales: existen fuentes de reemplazo locales.
+
+USO
+1. En Proyecto, revisar tensión, fases, tipos de carga, generador y UPS.
+2. En Cargas, elegir Importar Excel, seleccionar la hoja y revisar la vista
+   previa. Usar estas cargas reemplaza el listado solamente al pulsar el botón.
+3. Revisar FP, fases, dedicado, respaldo y longitudes. Esos datos no vienen
+   del Excel suministrado y se completan con criterios de la aplicación.
+   Al importar se solicita respaldo para todas las cargas. Desmarcar las que
+   deban quedar solo en red. El ejemplo inicial excluye el aire acondicionado.
+4. En Diagrama unifilar o Tablero, usar Ajustar ancho, Ver plano completo,
+   100% y las barras de desplazamiento para recorrer los componentes.
+5. Descargar DXF para continuar el trabajo en CAD. Cada circuito tiene su
+   propia capa; existen capas de red, protecciones, respaldo, tierra y cajetín.
+   Las líneas, círculos y textos son entidades editables. No son imágenes
+   incrustadas. El DXF se genera con la misma geometría del SVG mostrado.
+6. Guardar proyecto (.json) para conservar ajustes y cargas. El autoguardado
+   del navegador depende del equipo y del origen desde el que se abre el HTML.
+
+ALCANCE
+La entrada reconoce los encabezados del Excel suministrado: Tipo de Circuito,
+Tag Id Equipo, Lugar, Caracteristicas, Cantidad y Potencia (W). Respeta los
+encabezados de sección Fuerza, Alumbrado y Control. Calcula el total desde
+cantidad por potencia unitaria, sin depender de resultados de fórmulas en caché.
+No ejecuta macros ni recalcula fórmulas que falten en las columnas de entrada.
+Una cantidad o potencia inválida detiene la importación de esa hoja.
+
+Los planos son de anteproyecto, con simbología simplificada y sin escala física.
+El tablero muestra componentes y cargas; no es un plano de fabricación.
+No se agregan dimensiones de gabinete, modelos comerciales, módulos DIN,
+borneras, secciones N/PE, curvas, poder de corte ni sensibilidad diferencial
+que el Excel no proporciona.
+
+Se conservó el motor de cálculo orientativo existente. Su alimentador trifásico
+supone demanda equilibrada: debe revisarse la corriente máxima por fase.
+La asignación rotativa de fases no demuestra equilibrio. Generador y UPS son
+parámetros del proyecto, no capacidades obtenidas del listado de consumos.
+La compatibilidad de fases, selección de respaldo y conexiones se deben revisar.
+
+DXF
+Salida ASCII R12 (AC1009), en unidades de dibujo sin escala física.
+Se normalizan acentos y símbolos para compatibilidad; mm² se exporta como mm2.
+El archivo no contiene bloques inteligentes de AutoCAD Electrical ni DWG nativo.
+Referencia de formato: https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-7D07C886-FD1D-4A0C-A7AB-B4D21F18E484.htm
+
+ENTREGABLES
+entregables/El-Tabo-unifilar.dxf y El-Tabo-tablero.dxf son ejemplos generados
+desde el Excel suministrado. Conservan los parámetros iniciales del prototipo:
+220/380 V, alimentación 3F, generador 10 kVA 1F, UPS 2 kVA desde C2, aire
+acondicionado excluido del respaldo. Estas opciones no se deducen del Excel.
+Las versiones SVG sirven para revisar la geometría en un navegador.
+respaldo/index-original.html conserva la versión anterior sin modificaciones.
+
+VERIFICACIÓN
+Prueba de importación real: 14 partidas y 11.080 W; referencias a filas 5–23.
+Pruebas de separación de respaldo, UPS vinculada al circuito seleccionado,
+textos largos, 60 circuitos, proyecto vacío y rechazo de entradas inválidas.
+Comprobación en navegador de zoom, importación, descargas, cambios de respaldo
+y UPS y límites de texto. Lectura, auditoría y guardado/relectura de DXF con
+ezdxf, sin errores ni reparaciones. No se realizó apertura en AutoCAD.
+
+Para repetir las pruebas de lógica desde esta carpeta:
+node tests/cad.test.cjs
+Para regenerar los ejemplos: node tests/cad.test.cjs --export
+La prueba busca el Excel suministrado un nivel por encima de esta carpeta.
+
+DEPENDENCIA
+SheetJS CE 0.20.3, distribución oficial guardada en vendor/xlsx.full.min.js.
+Licencia en vendor/LICENSE-sheetjs.txt.
+https://docs.sheetjs.com/docs/getting-started/installation/standalone/
